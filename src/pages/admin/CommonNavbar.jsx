@@ -30,7 +30,6 @@ const handleLogout = () => {
     }
   });
 };
-
   const handleSettings = () => {
 
     navigate("/dashboard");
@@ -51,13 +50,13 @@ const handleLogout = () => {
       </div>
 
       <div className="flex items-start md:gap-4 gap-2">
-          {user?.role && (
+         
               <UserDropdown
                 user={user}
                 onLogout={handleLogout}
                 onSettings={handleSettings}
               />
-            ) }
+        
       </div>
     </div>
   );
