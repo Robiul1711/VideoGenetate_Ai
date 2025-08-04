@@ -40,7 +40,7 @@ const Navbar = () => {
       </ul>
     </div>
       <div>
-        <CommonButton variant='secondary' className='rounded-full'>Sign In</CommonButton>
+        <CommonButton link={'/auth/sign-in'} variant='secondary' className='rounded-full'>Sign In</CommonButton>
       </div>
     </nav>
   )
