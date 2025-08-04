@@ -12,8 +12,8 @@
 
   /* color */
 
-  --color-primary: green;
-  --color-bg-custom: linear-gradient(red, yellow);
+  --color-Primary: #FFD700;
+  --color-bg-custom: #000000;
 
   /* breakpoint */
   --breakpoint-xxs: 390px;
@@ -219,4 +219,7 @@
 
 .bg-custom {
   background: var(--color-bg-custom);
+}
+button{
+  cursor: pointer;
 }

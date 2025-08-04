@@ -4,7 +4,9 @@ import SideBar from "@/pages/admin/SideBar";
 import React, { useEffect, useState } from "react";
 import { Outlet, ScrollRestoration, useLocation } from "react-router-dom";
 import { MdDashboard } from "react-icons/md";
-import { CgProfile } from "react-icons/cg";
+import { FaRegFileLines } from "react-icons/fa6";
+import { Settings } from "lucide-react";
+import { BiSolidCrown } from "react-icons/bi";
 const AdminLayout = () => {
   const [Open, setOpen] = useState(false);
 
@@ -13,29 +15,35 @@ const AdminLayout = () => {
         id: 1,
         icon: <MdDashboard />,
         text: "Dashboard",
-        path: "/dashboard", // main path (optional, if you still want to keep it)
-        activePaths: ["/dashboard", "/dashboard/settings", "/dashboard/analytics"], // all paths that should make this item active
+        path: "/dashboard", 
+        activePaths: ["/dashboard"], 
         sublink: false,
-      }
-      ,
+      },
     {
-      id:2,
-      icon:<MdDashboard />,
-      text:"Admin Management",
-      path:"/dashboard/admin-list",
-      sublink:[
-        {
-          id:1,
-          text:"Admin List",
-          path:"/dashboard/admin-list",
-        },
-        {
-          id:1,
-          text:"Add New Admin",
-          path:"/dashboard/asdasd"
-        },
-      ]
-    },
+        id: 1,
+        icon: <FaRegFileLines className="text-xl" />,
+        text: "My Projects",
+        path: "/dashboard/my-projects", 
+        activePaths: ["/dashboard/my-projects"], 
+        sublink: false,
+      },
+    {
+        id: 1,
+        icon: <BiSolidCrown />,
+        text: "My Subscription",
+        path: "/dashboard/my-subscription", 
+        activePaths: ["/dashboard/my-subscription"], 
+        sublink: false,
+      },
+    {
+        id: 1,
+        icon: <Settings />,
+        text: "Setting",
+        path: "/dashboard/settings", 
+        activePaths: [ "/dashboard/settings",], 
+        sublink: false,
+      },
+
   ];
   const location = useLocation();
   useEffect(() => {
@@ -47,10 +55,10 @@ const AdminLayout = () => {
   return (
     <>
       <ScrollRestoration />
-      <div className="flex  h-screen min-h-screen w-full">
+      <div className="flex  h-screen min-h-screen w-full bg-[#000000]">
         <SideBar open={Open} setOpen={setOpen} sidebar={sideBar} />
         <div className="flex-1 bg-dark text-white flex flex-col overflow-auto custom-scrollbar">
-          <div className=" flex flex-col lg:gap-10 gap-5 lg:py-6 py-3 lg:px-[30px] px-2.5 sm:px-5">
+          <div className=" flex flex-col ">
             <CommonNavbar open={Open} setOpen={setOpen} />
             <Outlet />
           </div>
