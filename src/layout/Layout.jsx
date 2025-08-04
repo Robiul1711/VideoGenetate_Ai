@@ -4,11 +4,11 @@ import { Outlet } from "react-router-dom";
 
 const Layout = () => {
   return (
-    <>
+    <div className="bg-custom min-h-screen">
       <Navbar />
       <Outlet />
       <Footer />
-    </>
+    </div>
   );
 };
 

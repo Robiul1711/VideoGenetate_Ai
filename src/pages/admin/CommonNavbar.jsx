@@ -7,25 +7,22 @@ import { Link, useLocation } from "react-router-dom";
 const CommonNavbar = ({ open, setOpen }) => {
   const { pathname } = useLocation();
   return (
-    <div className="flex items-center gap-5 justify-between w-full py-3 md:py-6 px-0  rounded-2xl">
+    <div className="flex items-center gap-5 justify-between w-full py-3 md:py-6 px-4 border-b border-gray-200/20 bg-Primary/10  text-white">
       <div className="flex items-center gap-4">
         <span
           onClick={() => setOpen(!open)}
           className="xlg:hidden block cursor-pointer"
         >
-          <GiHamburgerMenu color="black" size={26} />
+          <GiHamburgerMenu color="" size={26} />
         </span>
         <div className="flex items-center gap-4">
-          <p className=" text-black text-3xl font-bold">Admin Header</p>
+          <p className="  text-3xl font-bold">Admin Header</p>
         </div>
       </div>
 
-      <div className="flex items-start md:gap-4 gap-2">
+      <div className="flex items-start ">
         <span>
-          <IoIosNotifications color="black" size={24} />
-        </span>
-        <span>
-          <CgProfile color="black" size={24} />
+          <CgProfile color="" size={24} />
         </span>
       </div>
     </div>

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import { IoLogOutOutline } from "react-icons/io5";
-import { FaReact } from "react-icons/fa6";
+import { LogoIcon } from "@/components/common/Icons";
 const SideBar = ({ sidebar, open, setOpen }) => {
   const location = useLocation();
   const [activeParentIndex, setActiveParentIndex] = useState(null);
@@ -39,7 +39,7 @@ const SideBar = ({ sidebar, open, setOpen }) => {
     <>
       {/* Overlay */}
       <div
-        className={`fixed inset-0 bg-black/30 backdrop-blur-sm transition-all duration-300 ease-in-out ${
+        className={`fixed inset-0  backdrop-blur-sm transition-all duration-300 ease-in-out ${
           open ? "opacity-100 visible" : "opacity-0 invisible"
         } xl:hidden z-50`}
         onClick={() => setOpen(false)}
@@ -49,20 +49,15 @@ const SideBar = ({ sidebar, open, setOpen }) => {
       <div
         className={`h-full py-6 ${
           open
-            ? "left-0 top-0 w-[320px] z-[220] shadow-lg bg-[#1F3C37] overflow-y-auto"
+            ? "left-0 top-0 w-[320px] z-[220] shadow-lg bg-Primary/10 overflow-y-auto"
             : "-left-full xl:w-[350px] w-[320px]"
         }
-        bg-[#ddd] backdrop-blur-md lg:px-8 px-4 flex flex-col gap-8 shadow-md xlg:static fixed transition-all duration-300`}
+        bg-Primary/5 backdrop-blur-md lg:px-8 px-4 flex flex-col gap-8 shadow-md xlg:static fixed transition-all duration-300`}
       >
         {/* Logo */}
-        <Link to={"/"}>
-          <div className="flex justify-center items-center">
-            {/* <img src={} alt="Safe" className="h-24 object-contain" /> */}
-            <span>
-              <FaReact size={40} color=" black" />
-            </span>
-          </div>
-        </Link>
+    <Link to='/' className='flex items-center gap-2 text-2xl text-Primary font-bold'>
+        <LogoIcon className={"size-9"}/>Clipo.ai
+      </Link>
 
         {/* Navigation */}
         <div className="flex flex-col gap-3">
@@ -78,7 +73,7 @@ const SideBar = ({ sidebar, open, setOpen }) => {
                 }}
                 className={`flex items-center gap-3 px-4 py-2 rounded-lg text-base font-medium transition-colors duration-200 ${
                   isActive(item?.activePaths)
-                    ? "bg-[#FFF] text-[#3F6534]"
+                    ? "bg-Primary text-black"
                     : "text-[#FFF] hover:bg-[#466b55] hover:text-[#ffffff]"
                 }`}
               >
@@ -139,9 +134,9 @@ const SideBar = ({ sidebar, open, setOpen }) => {
           })}
 
           {/* Logout */}
-          <div className="flex absolute bottom-6 w-[80%] items-center gap-3  cursor-pointer  transition  rounded-lg px-4 py-2">
+          <div className="flex absolute bottom-6 w-[80%] items-center gap-3 text-red-700 cursor-pointer  transition  rounded-lg px-4 py-2">
             <span>
-              <IoLogOutOutline color="black" />
+              <IoLogOutOutline size={20} />
             </span>
             <p className="font-medium ">Log Out</p>
           </div>
