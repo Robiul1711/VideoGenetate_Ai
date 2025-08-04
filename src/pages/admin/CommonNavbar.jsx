@@ -10,7 +10,6 @@ const CommonNavbar = ({ open, setOpen }) => {
   const {user,setUser}=useAuth();
   const navigate = useNavigate();
 
-
 const handleLogout = () => {
   Swal.fire({
     title: 'Are you sure?',
@@ -56,7 +55,6 @@ const handleLogout = () => {
                 onLogout={handleLogout}
                 onSettings={handleSettings}
               />
-        
       </div>
     </div>
   );
