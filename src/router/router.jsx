@@ -2,16 +2,19 @@ import Dashboard from "@/components/admin/Dashboard";
 import MyProjects from "@/components/admin/MyProjects";
 import MySubscription from "@/components/admin/MySubscription";
 import Setting from "@/components/admin/Setting";
+import MyPricePlan from "@/components/common/Dashboard_Components/MyPricePlan";
 import VideoEditorInterface from "@/components/common/Dashboard_Components/VideoEditorInterface";
 import AdminLayout from "@/layout/AdminLayout";
 import AuthLayout from "@/layout/AuthLayout";
 import Layout from "@/layout/Layout";
+import About from "@/pages/AboutPage/About";
 import ForgetPassword from "@/pages/AuthPages/ForgetPassword";
 import NewPasswordSet from "@/pages/AuthPages/NewPasswordSet";
 import SignIn from "@/pages/AuthPages/SignIn";
 import SignUp from "@/pages/AuthPages/SignUp";
 import VerifyOtp from "@/pages/AuthPages/VerifyOtp";
 import Home from "@/pages/home/Home";
+import Pricing from "@/pages/PricingPage/Pricing";
 
 
 import { createBrowserRouter } from "react-router-dom";
@@ -51,6 +54,14 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <Home />,
+      },
+      {
+        path: "/about",
+        element: <About />,
+      },
+      {
+        path: "/pricing",
+        element: <Pricing />,
       },
 
     ],

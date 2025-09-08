@@ -1,7 +1,9 @@
 import OTPInput from "otp-input-react";
 import { Controller, useForm } from "react-hook-form";
+import logo from "@/assets/images/logo.png";
 import { BeatLoader } from "react-spinners";
 import CommonButton from "@/components/common/CommonButton";
+import { Link } from "react-router-dom";
 export default function VerifyOtp() {
   const {
     handleSubmit,
@@ -19,6 +21,9 @@ export default function VerifyOtp() {
   return (
     <div className="w-full max-w-lg bg-[#1E1E23]/30 backdrop-blur-sm text-white rounded-xl p-4 sm:p-8 border border-Primary/20">
       {/* Header */}
+              <Link to="/" className="flex items-center justify-center mb-4 sm:mb-8">
+        <img src={logo} alt="" className="w-12 h-12" />
+        </Link>
       <div className="text-center mb-4 sm:mb-8">
         <h1 className="text-2xl font-semibold  mb-2">Verify Your Email</h1>
         <p className=" text-sm">We’ve sent a 5-digit code to your email.</p>
