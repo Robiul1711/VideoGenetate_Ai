@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import CommonButton from "@/components/common/CommonButton";
-
+import logo from "@/assets/images/logo.png";
 export default function NewPasswordSet() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
@@ -32,6 +32,9 @@ export default function NewPasswordSet() {
   return (
     <div className="w-full max-w-lg bg-[#1E1E23]/30 backdrop-blur-sm text-white rounded-xl p-4 sm:p-8 border border-Primary/20">
       {/* Header */}
+              <Link to="/" className="flex items-center justify-center mb-4 sm:mb-8">
+        <img src={logo} alt="" className="w-12 h-12" />
+        </Link>
       <div className="text-center mb-4 sm:mb-8">
         <h1 className="text-2xl font-semibold mb-2">Set a New Password</h1>
         <p className="text-sm">Create a strong password you’ll remember.</p>

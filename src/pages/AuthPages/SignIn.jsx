@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Mail, Lock, Eye, EyeOff, User } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-
+import logo from "@/assets/images/logo.png";
 import { BeatLoader } from "react-spinners";
 import CommonButton from "@/components/common/CommonButton";
 export default function SignIn() {
@@ -36,6 +36,9 @@ export default function SignIn() {
   return (
       <div className="w-full max-w-lg bg-[#1E1E23]/30 backdrop-blur-sm text-white rounded-xl p-4 sm:p-8 border border-Primary/20">
         {/* Header */}
+                <Link to="/" className="flex items-center justify-center mb-4 sm:mb-8">
+        <img src={logo} alt="" className="w-12 h-12" />
+        </Link>
         <div className="text-center mb-4 sm:mb-8">
           <h1 className="text-2xl font-semibold  mb-2">
        Sign In to Your Account
@@ -136,7 +139,7 @@ export default function SignIn() {
     <input type="checkbox" />
     <p>Remember me</p>
   </div>
-  <Link to="/auth/forgot-password" className="">Forgot Password?</Link>
+  <Link to="/auth/forget-password" className="hover:underline text-Primary">Forgot Password?</Link>
 </div>
           {/* Submit Button */}
           <CommonButton
@@ -166,7 +169,7 @@ export default function SignIn() {
             to={"/auth/sign-up"}
             className="text-blue-600 hover:underline font-medium"
           >
-            Sign In
+            Sign Up
           </Link>
         </div>
       </div>
