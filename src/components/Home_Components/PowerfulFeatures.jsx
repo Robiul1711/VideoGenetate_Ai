@@ -48,24 +48,25 @@ const PowerfulFeatures = () => {
         Our AI-powered platform makes video creation effortless and accessible
         to everyone.
       </Title>
-      <div className="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {
-          data.map((item) => (
-            <div className="border border-Primary/30 bg-Primary/10 p-6  rounded-2xl">
-              <div className="">{item.icon}</div>
-              <div className="mt-6">
-                <Title level="title24" className="text-white mb-2">
-                  {item.title}
-                </Title>
-                <p className="text-white text-base font-medium leading-relaxed">
-                  {item.description}
-                </p>
-              </div>
-            </div>
-          ))
-        }
-
+<div className="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+  {data.map((item) => (
+    <div
+      key={item.id}
+      className="border border-Primary/30 bg-Primary/10 p-6 rounded-2xl transition-transform transform hover:scale-105 hover:shadow-lg hover:border-Primary/50"
+    >
+      <div>{item.icon}</div>
+      <div className="mt-6">
+        <Title level="title24" className="text-white mb-2">
+          {item.title}
+        </Title>
+        <p className="text-white text-base font-medium leading-relaxed">
+          {item.description}
+        </p>
       </div>
+    </div>
+  ))}
+</div>
+
     </div>
   );
 };
