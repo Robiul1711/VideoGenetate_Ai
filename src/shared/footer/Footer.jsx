@@ -17,8 +17,8 @@ const Footer = () => {
     <footer className=" text-white py-6 md:py-12 section-padding-x border-t border-white/20">
       <div className="flex flex-col items-center gap-8 md:gap-10 text-center">
         {/* Logo */}
-         <Link to='/' className='flex items-center gap-2 text-2xl text-Primary font-bold'>
-             <LogoIcon />Clipo.ai
+         <Link to='/' className='flex items-center gap-2 text-xl sm:text-2xl text-Primary font-bold'>
+             <LogoIcon className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12" />Clipo.ai
            </Link>
 
         {/* Navigation Links */}
@@ -36,8 +36,8 @@ const Footer = () => {
         </ul>
 
         {/* Bottom Section */}
-        <div className="w-full border-t border-white/20 pt-5 md:pt-8 flex flex-col md:flex-row items-center justify-between gap-4 md:gap-6 text-sm">
-          <p className="text-center md:text-left text-[#cac4c4] text-xl"> <Link to="/terms-of-service" className="hover:underline transition-all duration-200">Terms of Service</Link> | <Link to="/privacy-policy" className="hover:underline transition-all duration-200">Privacy Policy </Link></p>
+        <div className="w-full border-t border-white/20 pt-5 md:pt-8 flex flex-col md:flex-row items-center justify-between gap-4 md:gap-6 text-sm sm:text-base md:text-lg">
+          <p className="text-center md:text-left text-[#cac4c4] "> <Link to="/terms-of-service" className="hover:underline transition-all duration-200">Terms of Service</Link> | <Link to="/privacy-policy" className="hover:underline transition-all duration-200">Privacy Policy </Link></p>
 {/* 
           <div className="flex gap-8 ">
             <FaFacebook className="hover:text-gray-300 cursor-pointer text-xl" />
@@ -47,7 +47,7 @@ const Footer = () => {
             <IoLogoLinkedin className="hover:text-gray-300 cursor-pointer text-xl" />
           </div> */}
 
-          <p className="text-center md:text-right text-[#cac4c4] text-xl">
+          <p className="text-center md:text-right text-[#cac4c4] md:text-lg">
             © {new Date().getFullYear()} Aviation Insider. All rights reserved.
           </p>
         </div>

@@ -28,10 +28,10 @@ const data = [
 const Dashboard = () => {
   return (
     <div className='p-8'>
-      <div className='grid grid-cols-1 md:grid-cols-3 gap-10'>
+      <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3  gap-4 md:gap-6'>
         {
           data.map((item, index) => (
-            <div key={index} className='border border-Primary/30 bg-Primary/10 p-6 md:p-12 rounded-2xl mb-10 flex gap-10'>
+            <div key={index} className='border border-Primary/30 bg-Primary/10 p-6 md:p-12 rounded-2xl flex gap-6'>
               <div>{item.icon}</div>
               <div>
                 <Title level="title24" className="text-white mb-2">
@@ -46,7 +46,7 @@ const Dashboard = () => {
         }
       </div>
 
-              <div className="w-full">
+              <div className="w-full mt-5 sm:mt-10">
           <div className="border border-Primary/30 bg-Primary/10 p-6 md:p-8 rounded-2xl">
             <Title level="title32" className="text-white text-center mb-6">
               Convert Your Ideas Into AI Videos

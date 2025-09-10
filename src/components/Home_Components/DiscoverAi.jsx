@@ -38,38 +38,25 @@ const DiscoverAi = () => {
       </Title>
 
       <div className="grid grid-cols-1 md:grid-cols-3 w-full gap-10 mt-26">
-        {/* Buttons */}
-        <div className="inline space-y-6">
-          <CommonButton
-            variant="secondary"
-            className={`rounded-full flex items-center gap-2 border border-Primary bg-Primary/10 text-white hover:text-black ${
-              activeTab === "mission" ? "bg-Primary text-black" : ""
-            }`}
-            onClick={() => setActiveTab("mission")}
-          >
-            Our Mission <MdOutlineArrowOutward size={20} />
-          </CommonButton>
+      {/* Buttons */}
+<div className="flex flex-wrap md:flex-nowrap md:inline gap-4 md:space-y-4">
+  {[
+    { id: "mission", label: "Our Mission" },
+    { id: "vision", label: "Our Vision" },
+    { id: "values", label: "Core Values" },
+  ].map((btn) => (
+    <CommonButton
+      key={btn.id}
+      variant="secondary"
+      className={`rounded-full flex items-center gap-2 border border-Primary bg-Primary/10 text-white hover:text-black transition-all duration-300
+        ${activeTab === btn.id ? "bg-Primary text-black" : ""}`}
+      onClick={() => setActiveTab(btn.id)}
+    >
+      {btn.label} <MdOutlineArrowOutward size={20} />
+    </CommonButton>
+  ))}
+</div>
 
-          <CommonButton
-            variant="secondary"
-            className={`rounded-full flex items-center gap-2 border border-Primary bg-Primary/10 text-white hover:text-black ${
-              activeTab === "vision" ? "bg-Primary text-black" : ""
-            }`}
-            onClick={() => setActiveTab("vision")}
-          >
-            Our Vision <MdOutlineArrowOutward size={20} />
-          </CommonButton>
-
-          <CommonButton
-            variant="secondary"
-            className={`rounded-full flex items-center gap-2 border border-Primary bg-Primary/10 text-white hover:text-black ${
-              activeTab === "values" ? "bg-Primary text-black" : ""
-            }`}
-            onClick={() => setActiveTab("values")}
-          >
-            Core Values <MdOutlineArrowOutward size={20} />
-          </CommonButton>
-        </div>
 
         {/* Text Content */}
         <div className="flex flex-col">

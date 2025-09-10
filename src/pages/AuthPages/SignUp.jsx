@@ -6,10 +6,14 @@ import { Link, useNavigate } from "react-router-dom";
 import logo from "@/assets/images/logo.png";
 import { BeatLoader } from "react-spinners";
 import CommonButton from "@/components/common/CommonButton";
+import useAxiosPublic from "@/hooks/useAxiosPublic";
+import { useMutation } from "@tanstack/react-query";
+import { showLoadingToast, updateToastError, updateToastSuccess } from "@/lib/utils";
 export default function SignUp() {
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
+  const axiosPublic = useAxiosPublic();
   const navigate = useNavigate();
 
   const {
@@ -17,21 +21,35 @@ export default function SignUp() {
     handleSubmit,
     formState: { errors },
     watch,
-  } = useForm({
-    defaultValues: {
-      fullName: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
-    },
-  });
+  } = useForm();
 
   const password = watch("password");
 
+ const SignupMutation = useMutation({
+    mutationFn: async (data) => {
+      const response = await axiosPublic.post("/account/register/", data);
+      return response?.data;
+    },
+    onMutate: () => {
+      const toastId = showLoadingToast("Registering...");
+      return { toastId };
+    },
+    onSuccess: (response, _variables, context) => {
+      updateToastSuccess(context.toastId, response?.message || "Sign-up successful");
 
-
+      navigate("/auth/sign-in");
+    },
+    onError: (error, _variables, context) => {
+      console.log(error);
+      const errorMessage =
+        error.response?.data?.message ||
+        "Something went wrong, try again later!!";
+      updateToastError(context.toastId, errorMessage);
+    },
+  });
   const onSubmit = (data) => {
     console.log(data);
+    SignupMutation.mutate(data);
   };
   return (
       <div className="w-full max-w-lg bg-[#1E1E23]/30 backdrop-blur-sm text-white rounded-xl p-4 sm:p-8 border border-Primary/20">
@@ -54,6 +72,37 @@ export default function SignUp() {
           className="space-y-3 sm:space-y-6"
         >
 
+          {/* Name */}
+          <div>
+            <label
+              htmlFor="name"
+              className="block text-sm font-medium  mb-2"
+            >
+             Name
+            </label>
+            <div className="relative">
+              <Mail className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+              <input
+                id="name"
+                type="name"
+                {...register("name", {
+                  required: "Name is required",
+                
+                })}
+                placeholder="Enter your name"
+                className={`w-full pl-10 pr-4 py-3 border rounded-lg text-sm focus:ring-2 focus:outline-none transition ${
+                  errors.name
+                    ? "border-red-500 focus:ring-red-300"
+                    : "border-gray-300 focus:ring-blue-500"
+                }`}
+              />
+            </div>
+            {errors.name && (
+              <p className="mt-1 text-sm text-red-600">
+                {errors.name.message}
+              </p>
+            )}
+          </div>
           {/* Email */}
           <div>
             <label
@@ -146,16 +195,16 @@ export default function SignUp() {
             <div className="relative">
               <Lock className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
               <input
-                id="confirmPassword"
+                id="confirm_password"
                 type={showConfirm ? "text" : "password"}
-                {...register("password_confirmation", {
+                {...register("confirm_password", {
                   required: "Confirm your password",
                   validate: (value) =>
                     value === password || "Passwords do not match",
                 })}
                 placeholder="••••••••"
                 className={`w-full pl-10 pr-12 py-3 border rounded-lg text-sm focus:ring-2 focus:outline-none transition ${
-                  errors.confirmPassword
+                  errors.confirm_password
                     ? "border-red-500 focus:ring-red-300"
                     : "border-gray-300 focus:ring-blue-500"
                 }`}
@@ -172,9 +221,9 @@ export default function SignUp() {
                 )}
               </button>
             </div>
-            {errors.confirmPassword && (
+            {errors.confirm_password && (
               <p className="mt-1 text-sm text-red-600">
-                {errors.confirmPassword.message}
+                {errors.confirm_password.message}
               </p>
             )}
           </div>
@@ -185,7 +234,7 @@ export default function SignUp() {
             variant="secondary"
             className="w-full h-[44px] flex items-center justify-center "
           >
-            {/* {SignupMutation?.isPending ? (
+            {SignupMutation?.isPending ? (
               <BeatLoader
                 loading={SignupMutation?.isPending}
                 color="white"
@@ -195,8 +244,8 @@ export default function SignUp() {
               />
             ) : (
               "Sign Up"
-            )} */}
-            Sign Up
+            )}
+     
           </CommonButton>
         </form>
 

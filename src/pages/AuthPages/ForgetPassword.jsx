@@ -5,9 +5,11 @@ import { Link, useNavigate } from "react-router-dom";
 import logo from "@/assets/images/logo.png";
 import { BeatLoader } from "react-spinners";
 import CommonButton from "@/components/common/CommonButton";
+import { useMutation } from "@tanstack/react-query";
+import useAxiosPublic from "@/hooks/useAxiosPublic";
+import { showLoadingToast, updateToastError, updateToastSuccess } from "@/lib/utils";
 export default function ForgetPassword() {
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirm, setShowConfirm] = useState(false);
+const axiosPublic = useAxiosPublic();
   const navigate = useNavigate();
 
   const {
@@ -15,19 +17,34 @@ export default function ForgetPassword() {
     handleSubmit,
     formState: { errors },
     watch,
-  } = useForm({
-    defaultValues: {
-      fullName: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
+  } = useForm();
+
+ const ForgotPassMutation = useMutation({
+    mutationFn: async (data) => {
+      const response = await axiosPublic.post("/account/reset-password/request-otp/", data);
+      return response?.data;
+    },
+    onMutate: () => {
+      const toastId = showLoadingToast("Sending OTP to your email...");
+      return { toastId };
+    },
+    onSuccess: (response, _variables, context) => {
+      updateToastSuccess(context.toastId, response?.message || "OTP sent successfully");
+
+      navigate("/auth/verify-otp");
+    },
+    onError: (error, _variables, context) => {
+      console.log(error);
+      const errorMessage =
+        error.response?.data?.message ||
+        "Something went wrong, try again later!!";
+      updateToastError(context.toastId, errorMessage);
     },
   });
 
-  const password = watch("password");
-
   const onSubmit = (data) => {
     console.log(data);
+    ForgotPassMutation.mutate(data);
   };
   return (
     <div className="w-full max-w-lg bg-[#1E1E23]/30 backdrop-blur-sm text-white rounded-xl p-4 sm:p-8 border border-Primary/20">
@@ -86,18 +103,18 @@ export default function ForgetPassword() {
           variant="secondary"
           className="w-full h-[44px] flex items-center justify-center "
         >
-          {/* {SignupMutation?.isPending ? (
+          {ForgotPassMutation?.isPending ? (
               <BeatLoader
-                loading={SignupMutation?.isPending}
+                loading={ForgotPassMutation?.isPending}
                 color="white"
                 size={12}
                 aria-label="Loading Spinner"
                 data-testid="loader"
               />
             ) : (
-              "Sign Up"
-            )} */}
-          Send OTP
+              "Send OTP"
+            )}
+         
         </CommonButton>
       </form>
     </div>

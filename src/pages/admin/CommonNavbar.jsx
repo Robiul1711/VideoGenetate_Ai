@@ -41,7 +41,7 @@ const handleLogout = () => {
           onClick={() => setOpen(!open)}
           className="xlg:hidden block cursor-pointer"
         >
-          <GiHamburgerMenu color="black" size={26} />
+          <GiHamburgerMenu color="white" size={26} />
         </span>
         <div className="">
           <p className="  text-lg md:text-3xl font-bold">Welcome back, Ekramul</p>
