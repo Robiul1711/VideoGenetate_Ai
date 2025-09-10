@@ -4,7 +4,11 @@ import logo from "@/assets/images/logo.png";
 import { BeatLoader } from "react-spinners";
 import CommonButton from "@/components/common/CommonButton";
 import { Link } from "react-router-dom";
+import { useMutation } from "@tanstack/react-query";
+import useAxiosPublic from "@/hooks/useAxiosPublic";
+import { showLoadingToast, updateToastError, updateToastSuccess } from "@/lib/utils";
 export default function VerifyOtp() {
+  const axiosPublic = useAxiosPublic();
   const {
     handleSubmit,
     control,
@@ -15,8 +19,31 @@ export default function VerifyOtp() {
     },
   });
 
+   const OTPMutation = useMutation({
+    mutationFn: async (data) => {
+      const response = await axiosPublic.post("/account/register/", data);
+      return response?.data;
+    },
+    onMutate: () => {
+      const toastId = showLoadingToast("Registering...");
+      return { toastId };
+    },
+    onSuccess: (response, _variables, context) => {
+      updateToastSuccess(context.toastId, response?.message || "Sign-up successful");
+
+      navigate("/auth/sign-in");
+    },
+    onError: (error, _variables, context) => {
+      console.log(error);
+      const errorMessage =
+        error.response?.data?.message ||
+        "Something went wrong, try again later!!";
+      updateToastError(context.toastId, errorMessage);
+    },
+  });
   const onSubmit = (data) => {
     console.log(data);
+    OTPMutation.mutate(data);
   };
   return (
     <div className="w-full max-w-lg bg-[#1E1E23]/30 backdrop-blur-sm text-white rounded-xl p-4 sm:p-8 border border-Primary/20">
@@ -81,18 +108,18 @@ export default function VerifyOtp() {
           variant="secondary"
           className="w-full h-[44px] flex items-center justify-center "
         >
-          {/* {SignupMutation?.isPending ? (
+          {OTPMutation?.isPending ? (
               <BeatLoader
-                loading={SignupMutation?.isPending}
+                loading={OTPMutation?.isPending}
                 color="white"
                 size={12}
                 aria-label="Loading Spinner"
                 data-testid="loader"
               />
             ) : (
-              "Sign Up"
-            )} */}
-          VerifyOtp
+              "  VerifyOtp"
+            )}
+        
         </CommonButton>
       </form>
     </div>

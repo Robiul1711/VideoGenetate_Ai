@@ -6,10 +6,10 @@ const AuthLayout = () => {
   return (
     <div className='w-full h-screen flex items-center justify-center bg-cover bg-center' style={{backgroundImage:`url(${authBG})`}}>
       <div className='flex w-full h-full'>
-       <div className='w-1/2 flex items-center justify-center'>
+       <div className='w-1/2 hidden md:flex items-center justify-center'>
        <img src={authLeft} alt="" />
        </div>
-       <div className='w-1/2 flex items-center justify-center'>
+       <div className='md:w-1/2 flex w-full items-center justify-center p-4'>
       <Outlet />
        </div>
 

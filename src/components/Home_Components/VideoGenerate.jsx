@@ -11,7 +11,7 @@ const VideoGenerate = () => {
       <div className="flex flex-col lg:flex-row items-center justify-center gap-10 w-full">
         {/* Form Side */}
         <div className="w-full lg:w-1/2">
-          <div className="border border-Primary/30 bg-Primary/10 p-6 md:p-8 rounded-2xl">
+          <div className="border border-Primary/30 bg-Primary/10 p-4 sm:p-6 md:p-8 rounded-2xl">
             <Title level="title32" className="text-white text-center mb-6">
               Convert Your Ideas Into AI Videos
             </Title>
