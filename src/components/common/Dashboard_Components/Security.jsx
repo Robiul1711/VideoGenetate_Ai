@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import { FiLock, FiEye, FiEyeOff } from "react-icons/fi";
+import { useMutation } from "@tanstack/react-query";
+import useAxiosSecure from "@/hooks/useAxiosSecure";
+import { showLoadingToast, updateToastSuccess, updateToastError } from "@/lib/utils";
 
 const PasswordInput = ({ label, name, value, onChange }) => {
   const [show, setShow] = useState(false);
@@ -12,7 +15,7 @@ const PasswordInput = ({ label, name, value, onChange }) => {
         <input
           type={show ? "text" : "password"}
           name={name}
-          value={value}
+          value={value || ""}
           onChange={onChange}
           className="bg-transparent flex-1 outline-none text-white placeholder-gray-400"
           placeholder="Enter password"
@@ -31,10 +34,11 @@ const PasswordInput = ({ label, name, value, onChange }) => {
 
 const Security = () => {
   const [formData, setFormData] = useState({
-    oldPassword: "",
+    currentPassword: "",
     newPassword: "",
     repeatPassword: "",
   });
+  const axiosSecure = useAxiosSecure();
 
   const handleChange = (e) => {
     setFormData((prev) => ({
@@ -43,25 +47,55 @@ const Security = () => {
     }));
   };
 
+const changePasswordMutation = useMutation({
+  mutationFn: async (data) => {
+    const payload = {
+      current_password: data.currentPassword,
+      new_password: data.newPassword,
+      confirm_password: data.repeatPassword,
+    };
+    const res = await axiosSecure.post("/account/change-password/", payload);
+    return res.data;
+  },
+  onMutate: () => {
+    const toastId = showLoadingToast("Changing password...");
+    return { toastId }; // return it so it can be used in onSuccess/onError
+  },
+  onSuccess: (response, _variables, context) => {
+    updateToastSuccess(context.toastId, response?.message || "Password changed successfully!");
+    setFormData({
+      currentPassword: "",
+      newPassword: "",
+      repeatPassword: "",
+    });
+  },
+  onError: (error, _variables, context) => {
+    updateToastError(context.toastId, error.response?.data?.message || "Something went wrong!");
+  },
+});
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Form submitted", formData);
+    if (formData.newPassword !== formData.repeatPassword) {
+      return updateToastError(null, "New passwords do not match!");
+    }
+    changePasswordMutation.mutate(formData);
   };
 
   return (
-    <div className=" flex items-center justify-center max-w-7xl mx-auto">
+    <div className="flex items-center justify-center max-w-2xl mx-auto">
       <form
         onSubmit={handleSubmit}
-        className="bg-[#1f1d14] w-full  rounded-xl p-8 shadow-md border border-yellow-900/30"
+        className="bg-[#1f1d14] w-full rounded-xl p-8 shadow-md border border-yellow-900/30"
       >
         <h2 className="text-white font-semibold text-lg mb-8">
           Change Password <span className="text-yellow-500">🛈</span>
         </h2>
 
         <PasswordInput
-          label="Old Password"
-          name="oldPassword"
-          value={formData.oldPassword}
+          label="Current Password"
+          name="currentPassword"
+          value={formData.currentPassword}
           onChange={handleChange}
         />
         <PasswordInput

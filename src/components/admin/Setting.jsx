@@ -13,7 +13,7 @@ const tabs = [
 
 const Setting = () => {
   const [activeTab, setActiveTab] = useState("personal");
-
+  
   const renderComponent = () => {
     switch (activeTab) {
       case "personal":

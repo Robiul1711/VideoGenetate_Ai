@@ -3,6 +3,8 @@ import { LogoIcon } from "@/components/common/Icons";
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FiMenu, FiX } from "react-icons/fi";
+import UserDropdown from "../UserDropdown";
+import { useAuth } from "@/hooks/useAuth";
 
 const Navbar = () => {
   const [activeTab, setActiveTab] = useState(1);
@@ -12,7 +14,7 @@ const Navbar = () => {
   const navigate = useNavigate();
   const tabWidth = 100;
   const indicatorPosition = (activeTab - 1) * (tabWidth + 1);
-
+  const {user,logout}=useAuth();
   const tabs = [
     { label: "Home", path: "/" },
     { label: "About Us", path: "/about" },
@@ -101,6 +103,11 @@ const Navbar = () => {
 
         {/* Sign In Button */}
         <div className="hidden md:block">
+          {
+            user ?
+            <UserDropdown user={user} onLogout={logout} /> 
+            :
+
           <CommonButton
             link={"/auth/sign-in"}
             variant="secondary"
@@ -108,6 +115,7 @@ const Navbar = () => {
           >
             Sign In
           </CommonButton>
+          }
         </div>
 
         {/* Mobile Menu Button */}
@@ -121,51 +129,54 @@ const Navbar = () => {
         </div>
       </div>
 
-
-
       {/* Mobile Menu Overlay with Blur */}
       {mobileMenuOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40 md:hidden"
           onClick={() => toggleMobileMenu()}
         ></div>
       )}
 
- {/* Mobile Menu */}
-<div
-  className={`fixed top-0 left-0 h-full w-3/4 max-w-sm z-50 md:hidden transform transition-transform duration-300 ease-in-out
+      {/* Mobile Menu */}
+      <div
+        className={`fixed top-0 left-0 h-full w-3/4 max-w-sm z-50 md:hidden transform transition-transform duration-300 ease-in-out
     ${mobileMenuOpen ? "translate-x-0" : "-translate-x-full"}`}
->
-  <div className="p-6 pt-20 bg-black/90 backdrop-blur-md rounded-r-2xl">
-    <ul className="flex flex-col gap-6">
-      {tabs.map((tab, index) => {
-        const tabIndex = index + 1;
-        return (
-          <li
-            key={tab.label}
-            onClick={() => handleMenuClick(tabIndex, tab.path)}
-            className={`px-4 py-3 cursor-pointer rounded-lg font-semibold text-lg transition ease-in-out duration-300 ${
-              activeTab === tabIndex ? "text-Primary" : "text-white"
-            }`}
-          >
-            {tab.label}
-          </li>
-        );
-      })}
-      <li className="mt-4">
-        <CommonButton
-          link={"/auth/sign-in"}
-          variant="secondary"
-          className="rounded-full w-full justify-center"
-          onClick={() => setMobileMenuOpen(false)}
-        >
-          Sign In
-        </CommonButton>
-      </li>
-    </ul>
-  </div>
-</div>
+      >
+        <div className="p-6  bg-black/90 backdrop-blur-md rounded-r-2xl">
+          <div className="flex items-center gap-2 text-xl sm:text-2xl text-Primary font-bold ">
+            <LogoIcon className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 " />
+            Clipo.ai
+          </div>
 
+          <ul className="flex flex-col gap-1 mt-5">
+            {tabs.map((tab, index) => {
+              const tabIndex = index + 1;
+
+              return (
+                <li
+                  key={tab.label}
+                  onClick={() => handleMenuClick(tabIndex, tab.path)}
+                  className={`px-4 py-3 cursor-pointer rounded-lg font-semibold text-lg transition ease-in-out duration-300 ${
+                    activeTab === tabIndex ? "text-Primary" : "text-white"
+                  }`}
+                >
+                  {tab.label}
+                </li>
+              );
+            })}
+            <li className="mt-4">
+              <CommonButton
+                link={"/auth/sign-in"}
+                variant="secondary"
+                className="rounded-full w-full justify-center"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Sign In
+              </CommonButton>
+            </li>
+          </ul>
+        </div>
+      </div>
     </nav>
   );
 };
