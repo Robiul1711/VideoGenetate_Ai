@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import { FaSignOutAlt, FaCog, FaUserCircle } from "react-icons/fa";
 import { MdDashboard } from "react-icons/md";
-import { Link } from "react-router-dom";
 
-const UserDropdown = ({ user,onLogout }) => {
+const UserDropdown = ({ user, onLogout, onSettings }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
- const VITE_IMG_URL = import.meta.env.VITE_IMG_URL;
+
   const toggleDropdown = () => setIsOpen((prev) => !prev);
 
   useEffect(() => {
@@ -31,40 +30,31 @@ const UserDropdown = ({ user,onLogout }) => {
     };
   }, []);
 
-  
   return (
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={toggleDropdown}
         className="flex items-center gap-2 text-white text-lg"
       >
-        {
-          user?.data?.profile_photo_url ? (
-            <img
-              src={VITE_IMG_URL + user?.data?.profile_photo_url}
-              alt="Profile"
-              className="w-10 h-10 rounded-full"
-            />
-          ) : (
-            <FaUserCircle className="text-3xl text-white bg-Primary rounded-full" />
-          )
-        }
-
+        <FaUserCircle className="text-3xl text-white bg-Primary rounded-full" />
       </button>
 
       {isOpen && (
         <div className="absolute right-0 mt-2 w-64 bg-white rounded shadow-lg z-50 text-gray-800">
           <div className="px-4 py-3 border-b">
-            <p className="font-semibold">{user?.data?.name || "Username"}</p>
-            <p className="text-sm text-gray-500 truncate">{user?.data?.email}</p>
+            <p className="font-semibold">{user?.name || "Username"}</p>
+            <p className="text-sm text-gray-500 truncate">{user?.email}</p>
           </div>
           <div className="py-1">
-            <Link 
-              to="/dashboard"
+            <button
+              onClick={() => {
+                onSettings?.();
+                setIsOpen(false);
+              }}
               className="flex w-full items-center px-4 py-2 text-sm hover:bg-gray-100"
             >
               <MdDashboard className="mr-2" /> Dashboard
-            </Link>
+            </button>
            
             <button
               onClick={() => {

@@ -12,10 +12,12 @@ import {
   updateToastError,
   updateToastSuccess,
 } from "@/lib/utils";
+import { useEmail } from "@/hooks/useEmail";
 export default function SignIn() {
   const [showPassword, setShowPassword] = useState(false);
   const axiosPublic = useAxiosPublic();
   const navigate = useNavigate();
+  const { setToken } = useEmail();
 
   const {
     register,
@@ -39,10 +41,11 @@ export default function SignIn() {
         response?.message || "Login successful"
       );
 
+      setToken(response?.access);
+
       navigate("/");
     },
     onError: (error, _variables, context) => {
-      console.log(error);
       const errorMessage =
         error.response?.data?.message ||
         "Something went wrong, try again later!!";
@@ -145,7 +148,6 @@ export default function SignIn() {
           )}
         </div>
         <div className="flex items-center justify-end">
-
           <Link
             to="/auth/forget-password"
             className="hover:underline text-Primary"

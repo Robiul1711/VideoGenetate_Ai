@@ -3,48 +3,50 @@ import { Controller, useForm } from "react-hook-form";
 import logo from "@/assets/images/logo.png";
 import { BeatLoader } from "react-spinners";
 import CommonButton from "@/components/common/CommonButton";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import useAxiosPublic from "@/hooks/useAxiosPublic";
 import { showLoadingToast, updateToastError, updateToastSuccess } from "@/lib/utils";
+import { useEmail } from "@/hooks/useEmail";
 export default function VerifyOtp() {
+  const {email,setResetToken} = useEmail();
+const navigate = useNavigate();
   const axiosPublic = useAxiosPublic();
   const {
     handleSubmit,
     control,
     formState: { errors },
-  } = useForm({
-    defaultValues: {
-      otp: "",
-    },
-  });
+  } = useForm();
 
    const OTPMutation = useMutation({
     mutationFn: async (data) => {
-      const response = await axiosPublic.post("/account/register/", data);
+      const response = await axiosPublic.post("/account/reset-password/verify-otp/", data);
       return response?.data;
     },
     onMutate: () => {
-      const toastId = showLoadingToast("Registering...");
+      const toastId = showLoadingToast("Verifying...");
       return { toastId };
     },
     onSuccess: (response, _variables, context) => {
-      updateToastSuccess(context.toastId, response?.message || "Sign-up successful");
-
-      navigate("/auth/sign-in");
+      console.log(response);
+      updateToastSuccess(context.toastId, response?.message || "OTP verification successful");
+      setResetToken(response?.reset_token);
+      navigate("/auth/new-password-set");
     },
     onError: (error, _variables, context) => {
       console.log(error);
       const errorMessage =
-        error.response?.data?.message ||
-        "Something went wrong, try again later!!";
+        error.response?.data?.message 
       updateToastError(context.toastId, errorMessage);
     },
   });
-  const onSubmit = (data) => {
-    console.log(data);
-    OTPMutation.mutate(data);
-  };
+const onSubmit = (data) => {
+  OTPMutation.mutate({
+    ...data,
+    email: email?.email, // not the whole object
+  });
+};
+
   return (
     <div className="w-full max-w-lg bg-[#1E1E23]/30 backdrop-blur-sm text-white rounded-xl p-4 sm:p-8 border border-Primary/20">
       {/* Header */}
@@ -53,7 +55,7 @@ export default function VerifyOtp() {
         </Link>
       <div className="text-center mb-4 sm:mb-8">
         <h1 className="text-2xl font-semibold  mb-2">Verify Your Email</h1>
-        <p className=" text-sm">We’ve sent a 5-digit code to your email.</p>
+        <p className=" text-sm">We’ve sent a 4-digit code to your email.</p>
       </div>
 
       {/* Form */}
@@ -66,8 +68,8 @@ export default function VerifyOtp() {
           name="otp"
           rules={{
             required: "OTP is required",
-            minLength: { value: 5, message: "OTP must be 5 digits" },
-            maxLength: { value: 5, message: "OTP must be 5 digits" },
+            minLength: { value: 4, message: "OTP must be 4 digits" },
+            maxLength: { value: 4, message: "OTP must be 4 digits" },
           }}
           render={({ field }) => (
             <div className="flex justify-center">
@@ -75,22 +77,22 @@ export default function VerifyOtp() {
                 value={field.value}
                 onChange={field.onChange}
                 autoFocus
-                OTPLength={5}
+                OTPLength={4}
                 otpType="number"
                 disabled={false}
                 inputStyles={{
                   width: "3rem",
                   height: "3rem",
-                  margin: "0 0.5rem",
-                  fontSize: "1.5rem",
-                  borderRadius: "0.5rem",
-                  border: "2px solid #d1d5db",
+                  margin: "0 0.4rem",
+                  fontSize: "1.4rem",
+                  borderRadius: "0.4rem",
+                  border: "2px solid #d1d4db",
                   textAlign: "center",
                   outline: "none",
                 }}
                 focusStyles={{
                   border: "2px solid #3b82f6",
-                  boxShadow: "0 0 0 3px rgba(59, 130, 246, 0.5)",
+                  boxShadow: "0 0 0 3px rgba(49, 130, 246, 0.4)",
                 }}
                 className="otp-input-container"
               />
@@ -98,7 +100,7 @@ export default function VerifyOtp() {
           )}
         />
         {errors.otp && (
-          <p className="text-center text-sm text-red-500">
+          <p className="text-center text-sm text-red-400">
             {errors.otp.message}
           </p>
         )}

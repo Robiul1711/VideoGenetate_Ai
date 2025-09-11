@@ -8,10 +8,11 @@ import CommonButton from "@/components/common/CommonButton";
 import { useMutation } from "@tanstack/react-query";
 import useAxiosPublic from "@/hooks/useAxiosPublic";
 import { showLoadingToast, updateToastError, updateToastSuccess } from "@/lib/utils";
+import { useEmail } from "@/hooks/useEmail";
 export default function ForgetPassword() {
 const axiosPublic = useAxiosPublic();
   const navigate = useNavigate();
-
+  const {setEmail} = useEmail();
   const {
     register,
     handleSubmit,
@@ -30,7 +31,8 @@ const axiosPublic = useAxiosPublic();
     },
     onSuccess: (response, _variables, context) => {
       updateToastSuccess(context.toastId, response?.message || "OTP sent successfully");
-
+      console.log(response);
+  
       navigate("/auth/verify-otp");
     },
     onError: (error, _variables, context) => {
@@ -43,7 +45,7 @@ const axiosPublic = useAxiosPublic();
   });
 
   const onSubmit = (data) => {
-    console.log(data);
+    setEmail(data);
     ForgotPassMutation.mutate(data);
   };
   return (

@@ -7,6 +7,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import AuthProvider from "./providers/AuthProvider";
 import { Toaster } from "react-hot-toast";
+import EmailProvider from "./providers/EmailProvider";
 const queryClient = new QueryClient();
 
 createRoot(document.getElementById("root")).render(
@@ -16,9 +17,12 @@ createRoot(document.getElementById("root")).render(
   reverseOrder={false}
 />
     <QueryClientProvider client={queryClient}>
+        <EmailProvider>
       <AuthProvider>
+
         <RouterProvider router={router} />
       </AuthProvider>
+        </EmailProvider>
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   </StrictMode>
