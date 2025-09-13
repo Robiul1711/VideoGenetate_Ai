@@ -1,6 +1,7 @@
 import React from 'react'
 import SubscriptionDashboard from '../common/Dashboard_Components/SubscriptionDashboard'
 import MyPricePlan from '../common/Dashboard_Components/MyPricePlan'
+import ChoosePlan from '../Home_Components/ChoosePlan'
 
 const MySubscription = () => {
   return (
@@ -8,8 +9,8 @@ const MySubscription = () => {
       <div>
         <SubscriptionDashboard />
       </div>
-      <div className='mt-20 w-full mx-auto'>
-        <MyPricePlan />
+      <div className=''>
+        <ChoosePlan />
       </div>
     </div>
   )
