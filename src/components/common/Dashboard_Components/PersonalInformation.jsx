@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Camera } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useAuth } from "@/hooks/useAuth";
@@ -11,19 +11,47 @@ import {
 } from "@/lib/utils";
 
 const PersonalInformation = () => {
-  const axiosSequre = useAxiosSecure();
+  const axiosSecure = useAxiosSecure();
   const VITE_IMG_URL = import.meta.env.VITE_IMG_URL;
   const { user } = useAuth();
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isDirty, isValid },
-  } = useForm();
   const queryClient = useQueryClient();
-  const UpdateProfileMtation = useMutation({
-    mutationFn: async (data) => {
-      
-      const response = await axiosSequre.patch("account/profile/", data);
+  const [preview, setPreview] = useState(
+    VITE_IMG_URL + user?.data?.profile_photo_url
+  );
+  useEffect(() => {
+    if (user?.data?.profile_photo_url) {
+      setPreview(VITE_IMG_URL + user.data.profile_photo_url);
+    }
+  }, [user, VITE_IMG_URL]);
+const {
+  register,
+  handleSubmit,
+  formState: { errors },
+  setValue,
+  reset,
+} = useForm({
+  defaultValues: {
+    name: "",
+    profile_photo: null,
+  },
+});
+
+// when user data comes, reset the form values
+useEffect(() => {
+  if (user?.data) {
+    reset({
+      name: user.data.name || "",
+      profile_photo: null,
+    });
+  }
+}, [user, reset]);
+
+
+  const updateProfileMutation = useMutation({
+    mutationFn: async (formData) => {
+      const response = await axiosSecure.patch("account/profile/", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
       return response?.data;
     },
     onMutate: () => {
@@ -31,7 +59,6 @@ const PersonalInformation = () => {
       return { toastId };
     },
     onSuccess: (response, _variables, context) => {
-      // const queryClient = useQueryClient();
       updateToastSuccess(
         context.toastId,
         response?.message || "Profile updated successfully!"
@@ -45,11 +72,11 @@ const PersonalInformation = () => {
       updateToastError(context.toastId, errorMessage);
     },
   });
-  const onSubmit = (data) => {
-    console.log("Form Submitted ✅", data);
-    UpdateProfileMtation.mutate(data);
-  };
 
+  const onSubmit = (data) => {
+    updateProfileMutation.mutate(data);
+  };
+  console.log(preview);
   return (
     <div className="flex items-center justify-center p-4">
       <form
@@ -66,9 +93,30 @@ const PersonalInformation = () => {
             Profile Photo
           </h3>
           <div className="relative inline-block">
-            <div className="w-28 h-28 bg-gray-700/50 rounded-full border-2 border-gray-600/50 flex items-center justify-center hover:bg-gray-600/50 transition-colors cursor-pointer group overflow-hidden">
-              <img src={VITE_IMG_URL + user?.data?.profile_photo_url} alt="" />
-            </div>
+            <label className="w-28 h-28 rounded-full border-2 border-gray-600/50 flex items-center justify-center bg-gray-700/50 hover:bg-gray-600/50 transition-colors cursor-pointer overflow-hidden group">
+              {preview ? (
+                <img
+                  src={preview}
+                  alt="Profile Preview"
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <Camera className="w-8 h-8 text-gray-400" />
+              )}
+              <input
+                type="file"
+                accept="image/*"
+                {...register("profile_photo")}
+                className="hidden"
+                onChange={(e) => {
+                  if (e.target.files && e.target.files[0]) {
+                    const file = e.target.files[0];
+                    setPreview(URL.createObjectURL(file));
+                    setValue("profile_photo", file); // keep RHF sync
+                  }
+                }}
+              />
+            </label>
           </div>
         </div>
 
@@ -81,25 +129,12 @@ const PersonalInformation = () => {
             Name
           </label>
           <input
-            defaultValue={user?.data?.name}
             id="name"
-            {...register("name", {
-              required: "Name is required",
-              minLength: {
-                value: 2,
-                message: "Name must be at least 2 characters",
-              },
-              maxLength: {
-                value: 50,
-                message: "Name must be less than 50 characters",
-              },
-            })}
+  
+            {...register("name")}
             className="w-full bg-transparent border border-yellow-400/60 rounded-lg px-4 py-3 text-gray-300 placeholder-gray-500 focus:outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400/50 transition-colors"
             placeholder="Enter your name"
           />
-          {errors.name && (
-            <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>
-          )}
         </div>
 
         {/* Email Field (Read-only, no validation) */}
@@ -114,7 +149,6 @@ const PersonalInformation = () => {
             id="email"
             type="email"
             defaultValue={user?.data?.email}
-            
             readOnly
             disabled
             className="w-full bg-gray-800/40 border border-gray-700 rounded-lg px-4 py-3 text-gray-400 cursor-not-allowed"
@@ -126,7 +160,6 @@ const PersonalInformation = () => {
         <div className="flex justify-end">
           <button
             type="submit"
-            disabled={!isDirty || !isValid}
             className="bg-yellow-400 hover:bg-yellow-300 disabled:bg-yellow-400/60 disabled:cursor-not-allowed text-black font-semibold px-6 py-2.5 rounded-lg transition-colors flex items-center gap-2"
           >
             Update Profile

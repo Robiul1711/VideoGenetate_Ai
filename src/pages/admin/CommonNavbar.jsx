@@ -44,7 +44,7 @@ const handleLogout = () => {
           <GiHamburgerMenu color="white" size={26} />
         </span>
         <div className="">
-          <p className="  text-lg md:text-3xl font-bold">Welcome back, Ekramul</p>
+          <p className="  md:text-3xl font-bold">Welcome back, {user?.data?.name}</p>
         </div>
       </div>
 

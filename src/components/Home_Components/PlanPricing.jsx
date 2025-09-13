@@ -1,58 +1,59 @@
+import useAxiosPublic from "@/hooks/useAxiosPublic";
 import Title from "../common/Title";
 import { MdOutlineDone } from "react-icons/md";
+import useAxiosSecure from "@/hooks/useAxiosSecure";
+import { useMutation } from "@tanstack/react-query";
+import {
+  showLoadingToast,
+  updateToastError,
+  updateToastSuccess,
+} from "@/lib/utils";
 
-const MonthlyPlans = [
-  {
-    name: "Basic",
-    price: 0.99,
-    features: [
-      "1 Free Video per Week",
-      "Basic AI Voiceover",
-      "Watermarked Video",
-      "Standard Resolution",
-      "Limited Video Styles",
-      "No Commercial Use",
-    ],
-    link: "https://lobfile.com/api/stripe/subscription.php?plan=basic_monthly",
-  },
-  {
-    name: "Advanced",
-    price: 4.99,
-    features: [
-      "Unlimited Videos per Month",
-      "Full HD + 4K Resolution",
-      "Early Access to New Features",
-      "Advanced Story Editing Tools",
-      "Multiple Language Voiceovers",
-      "Dedicated Rendering Server",
-    ],
-    link: "https://lobfile.com/api/stripe/subscription.php?plan=advance_monthly",
-  },
-  {
-    name: "Custom",
-    price: 2.99,
-    features: [
-      "Up to 15 Videos per Month",
-      "HD Download (1080p)",
-      "5+ Voiceover Options",
-      "Access to More Video Templates",
-      "Custom Background Music",
-      "Priority Rendering Queue",
-    ],
-    link: "https://lobfile.com/api/stripe/subscription.php?plan=power_monthly",
-  },
-];
+const PlanPricing = ({ Plans }) => {
+  const axiosSecure = useAxiosSecure();
+  const CheckoutMutation = useMutation({
+    mutationFn: async (data) => {
+      const response = await axiosSecure.post("stripe/checkout/", data);
+      return response?.data;
+    },
+    onMutate: () => {
+      const toastId = showLoadingToast("Checking out...");
+      return { toastId };
+    },
+    onSuccess: (response, _variables, context) => {
+      console.log(response?.data?.checkout_url);
+      updateToastSuccess(
+        context.toastId,
+        response?.message || "Checkout successful"
+      );
+      // ✅ Open in a new tab instead of redirecting
+      window.open(response?.data?.checkout_url, "_blank");
+    },
+    onError: (error, _variables, context) => {
+      const errorMessage =
+        error.response?.data?.message ||
+        "Something went wrong, try again later!!";
+      updateToastError(context.toastId, errorMessage);
+    },
+  });
 
-const PlanPricing = () => {
+  const handleCheckout = (plan) => {
+    CheckoutMutation.mutate({ plan_id: plan.id });
+  };
+
   return (
     <div className="max-w-6xl mx-auto">
+      {/* Section Title */}
+      <div className="text-center mb-10">
+        <Title text="Choose Your Plan" />
+      </div>
 
       {/* Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-        {MonthlyPlans.map((plan, index) => (
+        {Plans?.data?.map((plan, index) => (
           <a
             key={index}
-            href={plan.link}
+            // href={`https://lobfile.com/api/stripe/subscription.php?plan=${plan.stripe_price_id}`}
             target="_blank"
             rel="noopener noreferrer"
             className="flex cursor-pointer flex-col justify-between h-full bg-black rounded-xl p-6 border border-gray-700 hover:border-Primary transition"
@@ -66,23 +67,29 @@ const PlanPricing = () => {
                 <h3 className="text-5xl text-Primary font-extrabold">
                   ${plan.price}
                 </h3>
-                <span className="text-sm text-gray-400 mb-1">/month</span>
+                <span className="text-sm text-gray-400 mb-1">
+                  /{plan.interval_display || "month"}
+                </span>
               </div>
 
               {/* Button */}
-              <div className="mt-6 px-6 text-black rounded-lg font-semibold transition duration-300 flex items-center justify-center gap-2 py-2 sm:px-5 sm:py-2.5 md:px-7 md:py-3 border border-Primary bg-Primary text-sm sm:text-base">
+              <button
+                type="button"
+                onClick={() => handleCheckout(plan)}
+                className="mt-6 px-6 w-full text-black rounded-lg font-semibold transition duration-300 flex items-center justify-center gap-2 py-2 sm:px-5 sm:py-2.5 md:px-7 md:py-3 border border-Primary bg-Primary text-sm sm:text-base"
+              >
                 Unlock This Plan
-              </div>
+              </button>
 
               {/* Features */}
               <div className="flex flex-col gap-3 mt-5">
-                {plan.features.map((feature, i) => (
+                {plan.features?.map((feature) => (
                   <p
-                    key={i}
+                    key={feature.id}
                     className="text-white text-sm flex items-center gap-2"
                   >
                     <MdOutlineDone className="text-Primary text-xl" />
-                    {feature}
+                    {feature.title}
                   </p>
                 ))}
               </div>
