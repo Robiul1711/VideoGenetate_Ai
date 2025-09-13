@@ -39,9 +39,9 @@ export default function SubscriptionDashboard() {
             </div>
           </div>
 
-          <button className="w-full sm:w-auto bg-yellow-400 hover:bg-yellow-300 text-black font-semibold px-6 sm:px-8 py-3 rounded-lg transition-colors">
+          {/* <button className="w-full sm:w-auto bg-yellow-400 hover:bg-yellow-300 text-black font-semibold px-6 sm:px-8 py-3 rounded-lg transition-colors">
             Manage Plan
-          </button>
+          </button> */}
         </div>
 
         {/* Center Section - Credits Circle */}
