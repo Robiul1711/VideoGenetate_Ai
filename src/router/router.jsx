@@ -15,6 +15,8 @@ import SignUp from "@/pages/AuthPages/SignUp";
 import VerifyOtp from "@/pages/AuthPages/VerifyOtp";
 import Home from "@/pages/home/Home";
 import Pricing from "@/pages/PricingPage/Pricing";
+import PaymentCancel from "@/pages/SuccessAndCancle/PaymentCancel";
+import PaymentSuccess from "@/pages/SuccessAndCancle/PaymentSuccess";
 
 
 import { createBrowserRouter } from "react-router-dom";
@@ -62,6 +64,14 @@ const router = createBrowserRouter([
       {
         path: "/pricing",
         element: <Pricing />,
+      },
+      {
+        path: "/success",
+        element: <PaymentSuccess />,
+      },
+      {
+        path: "/cancle",
+        element: <PaymentCancel />,
       },
 
     ],

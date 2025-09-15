@@ -4,8 +4,10 @@ import CommonButton from "../common/CommonButton";
 import { FaFileVideo } from "react-icons/fa6";
 import SelectInput from "./SelectInput";
 import videoimg from "@/assets/images/video-img.png";
+import { useAuth } from "@/hooks/useAuth";
 
 const VideoGenerate = () => {
+  const {user}=useAuth();
   return (
     <div className="section-padding-x mt-16">
       <div className="flex flex-col lg:flex-row items-center justify-center gap-10 w-full">
@@ -49,20 +51,19 @@ const VideoGenerate = () => {
         </div>
 
         {/* Image Side */}
-     {/* Video Side (Right Column) */}
-<div className="w-full lg:w-1/2">
-  <div className="border border-Primary/30 rounded-2xl overflow-hidden">
-    <video
-      className="w-full h-auto object-cover rounded-2xl"
-      controls
-      poster={videoimg} // thumbnail image
-    >
-      <source src="/path-to-your-video.mp4" type="video/mp4" />
-      Your browser does not support the video tag.
-    </video>
-  </div>
-</div>
-
+        {/* Video Side (Right Column) */}
+        <div className="w-full lg:w-1/2">
+          <div className="border border-Primary/30 rounded-2xl overflow-hidden">
+            <video
+              className="w-full h-auto object-cover rounded-2xl"
+              controls
+              poster={videoimg} // thumbnail image
+            >
+              <source src="/path-to-your-video.mp4" type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+          </div>
+        </div>
       </div>
     </div>
   );

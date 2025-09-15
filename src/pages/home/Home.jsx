@@ -25,7 +25,7 @@ const AllData= data?.data || [];
         <VideoGenerate />
       </div>
       <PowerfulFeatures AllData={AllData} />
-      <DiscoverAi />
+      <DiscoverAi AllData={AllData} />
       <ChoosePlan AllData={AllData} />
     </div>
   );

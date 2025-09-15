@@ -223,3 +223,40 @@
 button{
   cursor: pointer;
 }
+
+/* @keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+} */
+
+@keyframes waves {
+  0% {
+    transform: scale(0.2);
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+}
+
+.waves {
+  width: 150px;
+  height: 150px;
+  animation: waves 3s ease-in-out infinite;
+  opacity: 0;
+}
+
+.wave-1 {
+  animation-delay: 0s;
+}
+.wave-2 {
+  animation-delay: 1s;
+}
+.wave-3 {
+  animation-delay: 2s;
+}
