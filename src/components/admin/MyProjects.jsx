@@ -3,6 +3,8 @@ import CommonButton from '../common/CommonButton';
 import { FaPlus } from 'react-icons/fa6';
 import Title from '../common/Title';
 import VideoCardInterface from '../common/Dashboard_Components/VideoCardInterface';
+import { useQuery } from '@tanstack/react-query';
+import useAxiosSecure from '@/hooks/useAxiosSecure';
 
 const projects = [
   {
@@ -22,6 +24,17 @@ const projects = [
   },
 ]
 const MyProjects = () => {
+    const AxiosSecure = useAxiosSecure();
+
+  // Fetch dashboard data
+  const { data: ListVideo, isLoading } = useQuery({
+    queryKey: ["listVideo"],
+    queryFn: async () => {
+      const res = await AxiosSecure.get("/video-generator/projects/");
+      return res.data;
+    },
+  });
+console.log(ListVideo);
   return (
     <div className="p-6 space-y-6">
       {/* Header */}
@@ -37,6 +50,7 @@ const MyProjects = () => {
 
         {/* Button */}
         <CommonButton
+          link="/"
           variant="secondary"
           className="flex items-center gap-2 border border-Primary bg-Primary/10 text-white hover:text-black"
         >
