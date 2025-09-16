@@ -50,18 +50,18 @@ console.log(ListVideo);
 
         {/* Button */}
         <CommonButton
-          link="/"
+          link="/dashboard"
           variant="secondary"
           className="flex items-center gap-2 border border-Primary bg-Primary/10 text-white hover:text-black"
         >
-          My Create New Video <FaPlus />
+          Create New Video <FaPlus />
         </CommonButton>
       </div>
 
       {/* Optional: Add your projects listing here */}
       <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {projects.map((project) => (
-          <VideoCardInterface key={project.id} {...project} />
+        {ListVideo?.data?.map((project, index) => (
+          <VideoCardInterface key={index} {...project} />
         ))}
       </div>
     </div>

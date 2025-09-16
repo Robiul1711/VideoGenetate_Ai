@@ -8,8 +8,12 @@ import {
   updateToastError,
   updateToastSuccess,
 } from "@/lib/utils";
+import { useAuth } from "@/hooks/useAuth";
 
 const PlanPricing = ({ Plans }) => {
+  const {user}=useAuth();
+  console.log(user?.data?.subscription_plan_id);
+  console.log(Plans?.data);
   const axiosSecure = useAxiosSecure();
   const CheckoutMutation = useMutation({
     mutationFn: async (data) => {
@@ -72,14 +76,23 @@ const PlanPricing = ({ Plans }) => {
                 </span>
               </div>
 
-              {/* Button */}
-              <button
-                type="button"
-                onClick={() => handleCheckout(plan)}
-                className="mt-6 px-6 w-full text-black rounded-lg font-semibold transition duration-300 flex items-center justify-center gap-2 py-2 sm:px-5 sm:py-2.5 md:px-7 md:py-3 border border-Primary bg-Primary text-sm sm:text-base"
-              >
-                Unlock This Plan
-              </button>
+      {/* Button */}
+<button
+  type="button"
+  onClick={() => handleCheckout(plan)}
+  disabled={user?.data?.subscription_plan_id === plan.id} // disable if current
+  className={`mt-6 px-6 w-full rounded-lg font-semibold transition duration-300 flex items-center justify-center gap-2 py-2 sm:px-5 sm:py-2.5 md:px-7 md:py-3 text-sm sm:text-base
+    ${
+      user?.data?.subscription_plan_id === plan.id
+        ? "bg-green-600 text-white border-green-600 cursor-not-allowed"
+        : "border border-Primary bg-Primary text-black hover:bg-Primary/90"
+    }`}
+>
+  {user?.data?.subscription_plan_id === plan.id
+    ? "Current Plan"
+    : "Unlock This Plan"}
+</button>
+
 
               {/* Features */}
               <div className="flex flex-col gap-3 mt-5">
