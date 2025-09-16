@@ -1,8 +1,7 @@
 import React from "react";
 import Title from "../common/Title";
-import CommonButton from "../common/CommonButton";
-import { MdOutlineArrowOutward } from "react-icons/md";
-
+import { Link } from "react-router-dom";
+import { FaArrowRightLong } from "react-icons/fa6";
 const Banner = ({ BannerData, isLoading }) => {
   return (
     <div className="section-padding-x flex items-center justify-center w-full max-w-[1350px] mx-auto flex-col">
@@ -16,25 +15,33 @@ const Banner = ({ BannerData, isLoading }) => {
       ) : (
         // 🔹 Actual Content
         <>
-          <Title
-            level="title56"
-            className="text-center text-Primary mb-6"
-          >
+          <Title level="title56" className="text-center text-Primary mb-6">
             {BannerData?.hero_section?.title}
           </Title>
-          <Title
-            level="title20"
-            className="text-center text-white"
-          >
+          <Title level="title20" className="text-center text-white">
             {BannerData?.hero_section?.subtitle}
           </Title>
-          <CommonButton
-            link={"/dashboard"}
-            variant="secondary"
-            className="mt-12 rounded-full flex items-center gap-2"
-          >
-            Get Start Now <MdOutlineArrowOutward size={20} />
-          </CommonButton>
+
+         <Link
+  to="/dashboard"
+  className="group relative flex border border-Primary/50 cursor-pointer items-center rounded-full bg-transparent mt-12"
+>
+  <div
+    className="relative flex items-center overflow-hidden"
+    style={{ minWidth: "180px" }}
+  >
+    <span className="flex h-11 w-11 items-center rounded-full bg-Primary px-3 transition-all duration-500 ease-in-out group-hover:w-full group-hover:justify-between">
+      <FaArrowRightLong className="text-black transform translate-x-0 transition-transform duration-500 ease-in-out group-hover:translate-x-2" />
+      <span className="absolute right-6 translate-y-8 font-semibold text-black transition-all duration-500 ease-in-out group-hover:translate-y-0">
+        Get Start Now
+      </span>
+    </span>
+    <p className="absolute right-6 font-semibold opacity-100 transition-all duration-500 ease-in-out group-hover:-translate-y-8 text-white">
+      Get Start Now
+    </p>
+  </div>
+</Link>
+
         </>
       )}
     </div>

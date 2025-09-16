@@ -67,7 +67,7 @@ const DiscoverAi = ({ AllData }) => {
 
         {/* Image */}
         <div>
-          <img src={ discover} alt="Discover AI" />
+          <img src={discover} alt="Discover AI" />
         </div>
       </div>
     </div>

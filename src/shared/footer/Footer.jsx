@@ -48,7 +48,7 @@ const Footer = () => {
           </div> */}
 
           <p className="text-center md:text-right text-[#cac4c4] md:text-lg">
-            © {new Date().getFullYear()} Aviation Insider. All rights reserved.
+            © {new Date().getFullYear()} Clipo.ai, LLC. All rights reserved.
           </p>
         </div>
       </div>

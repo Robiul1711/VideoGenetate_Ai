@@ -36,6 +36,7 @@ const AuthProvider = ({ children }) => {
     setToken("");
     localStorage.removeItem("token");
     toast.success("Logged out successfully");
+    window.location.href = "/auth/sign-in";
   };
 
   const value = {
