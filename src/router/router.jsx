@@ -18,8 +18,8 @@ import Pricing from "@/pages/PricingPage/Pricing";
 import PaymentCancel from "@/pages/SuccessAndCancle/PaymentCancel";
 import PaymentSuccess from "@/pages/SuccessAndCancle/PaymentSuccess";
 
-
 import { createBrowserRouter } from "react-router-dom";
+import PrivateRoute from "./PrivateRoute";
 
 const router = createBrowserRouter([
   // Auth
@@ -29,23 +29,23 @@ const router = createBrowserRouter([
     children: [
       {
         path: "sign-in",
-        element: <SignIn />
+        element: <SignIn />,
       },
       {
         path: "sign-up",
-        element: <SignUp />
+        element: <SignUp />,
       },
       {
         path: "forget-password",
-        element: <ForgetPassword />
+        element: <ForgetPassword />,
       },
       {
         path: "verify-otp",
-        element: <VerifyOtp />
+        element: <VerifyOtp />,
       },
       {
         path: "new-password-set",
-        element: <NewPasswordSet />
+        element: <NewPasswordSet />,
       },
     ],
   },
@@ -73,30 +73,34 @@ const router = createBrowserRouter([
         path: "/cancle",
         element: <PaymentCancel />,
       },
-
     ],
   },
 
   {
     path: "/dashboard",
-    element: <AdminLayout />,
+    element: (
+      <PrivateRoute>
+        <AdminLayout />
+      </PrivateRoute>
+    ),
+
     children: [
       {
         path: "/dashboard",
-        element: <Dashboard />, 
+        element: <Dashboard />,
       },
-      
+
       {
         path: "my-projects",
-        element: <MyProjects />, 
+        element: <MyProjects />,
       },
       {
         path: "my-subscription",
-        element: <MySubscription />, 
+        element: <MySubscription />,
       },
       {
         path: "settings",
-        element: <Setting />, 
+        element: <Setting />,
       },
     ],
   },

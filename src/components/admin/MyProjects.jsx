@@ -1,31 +1,28 @@
-import React from 'react';
+import React, { useState } from 'react';
 import CommonButton from '../common/CommonButton';
 import { FaPlus } from 'react-icons/fa6';
-import Title from '../common/Title';
 import VideoCardInterface from '../common/Dashboard_Components/VideoCardInterface';
 import { useQuery } from '@tanstack/react-query';
 import useAxiosSecure from '@/hooks/useAxiosSecure';
+import SearchInput from './SearchInput';
 
-const projects = [
-  {
-    id: 1,
-    title: 'Project 1',
-    description: 'Description of Project 1',
-  },
-  {
-    id: 2,
-    title: 'Project 2',
-    description: 'Description of Project 2',
-  },
-  {
-    id: 3,
-    title: 'Project 3',
-    description: 'Description of Project 3',
-  },
-]
 const MyProjects = () => {
-    const AxiosSecure = useAxiosSecure();
+   const [searchValue, setSearchValue] = useState("");
+  const placeholders = [
+    "Describe your scene for an AI video...",
+    "Enter a concept to generate a video...",
+    "Type a 3D animation idea...",
+    "Create a video from your imagination...",
+    "Describe a story for an AI video...",
+    "Visualize your idea in a short clip...",
+    "Generate an AI explainer video...",
+    "Create a cinematic AI video scene...",
+    "Design an AI-generated character animation...",
+    "Turn your text into a video..."
+];
 
+    const AxiosSecure = useAxiosSecure();
+  const [playingId, setPlayingId] = useState(null); // Only one playing video
   // Fetch dashboard data
   const { data: ListVideo, isLoading } = useQuery({
     queryKey: ["listVideo"],
@@ -41,11 +38,7 @@ console.log(ListVideo);
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         {/* Search */}
         <div className="w-full max-w-md">
-          <input
-            type="text"
-            placeholder="Search"
-            className="w-full p-3 bg-transparent text-white/80 border border-white/40 rounded-full outline-none placeholder:text-white/50"
-          />
+          <SearchInput searchValue={searchValue} setSearchValue={setSearchValue} placeholders={placeholders}/>
         </div>
 
         {/* Button */}
@@ -60,8 +53,14 @@ console.log(ListVideo);
 
       {/* Optional: Add your projects listing here */}
       <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {ListVideo?.data?.map((project, index) => (
-          <VideoCardInterface key={index} {...project} />
+        {ListVideo?.data?.map((video) => (
+         <VideoCardInterface
+          key={video.id}
+          project={video}
+          isPlaying={playingId === video.id}
+          onPlay={() => setPlayingId(video.id)}
+          onStop={() => setPlayingId(null)}
+        />
         ))}
       </div>
     </div>

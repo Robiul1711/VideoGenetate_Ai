@@ -108,7 +108,7 @@ const Navbar = () => {
 <div className="hidden md:block">
   {loading ? (
     // Skeleton UI while loading
-    <div className="w-24 h-10 bg-gray-300/30 animate-pulse rounded-full" />
+    <div className="w-10 h-10 bg-gray-300/30 animate-pulse rounded-full" />
   ) : user ? (
     <UserDropdown user={user} onLogout={logout} loading={loading} />
   ) : (
