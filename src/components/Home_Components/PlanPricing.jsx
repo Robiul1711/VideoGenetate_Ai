@@ -3,6 +3,7 @@ import Title from "../common/Title";
 import { MdOutlineDone } from "react-icons/md";
 import useAxiosSecure from "@/hooks/useAxiosSecure";
 import { useMutation } from "@tanstack/react-query";
+import Swal from "sweetalert2";
 import {
   showLoadingToast,
   updateToastError,
@@ -11,9 +12,7 @@ import {
 import { useAuth } from "@/hooks/useAuth";
 
 const PlanPricing = ({ Plans }) => {
-  const {user}=useAuth();
-  console.log(user?.data?.subscription_plan_id);
-  console.log(Plans?.data);
+  const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
   const CheckoutMutation = useMutation({
     mutationFn: async (data) => {
@@ -25,7 +24,6 @@ const PlanPricing = ({ Plans }) => {
       return { toastId };
     },
     onSuccess: (response, _variables, context) => {
-      console.log(response?.data?.checkout_url);
       updateToastSuccess(
         context.toastId,
         response?.message || "Checkout successful"
@@ -34,16 +32,41 @@ const PlanPricing = ({ Plans }) => {
       window.open(response?.data?.checkout_url, "_blank");
     },
     onError: (error, _variables, context) => {
+      console.log(error?.response?.data);
       const errorMessage =
-        error.response?.data?.message ||
+        error?.response?.data?.message ||
         "Something went wrong, try again later!!";
       updateToastError(context.toastId, errorMessage);
     },
   });
 
-  const handleCheckout = (plan) => {
-    CheckoutMutation.mutate({ plan_id: plan.id });
-  };
+
+
+// ...
+
+const handleCheckout = (plan) => {
+  if (!user) {
+    Swal.fire({
+      icon: "info",
+      title: "Login Required",
+      text: "To purchase any plan, you must be logged in first. Please login to continue.",
+      showCancelButton: true,
+      cancelButtonText: "Cancel",
+      confirmButtonText: "Login",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Redirect to login page
+        window.location.href = "/auth/sign-in"; // or use React Router navigate
+      }
+      // If cancelled, do nothing
+    });
+    return;
+  }
+
+  CheckoutMutation.mutate({ plan_id: plan.id });
+};
+
+
 
   return (
     <div className="max-w-6xl mx-auto">
@@ -76,23 +99,22 @@ const PlanPricing = ({ Plans }) => {
                 </span>
               </div>
 
-      {/* Button */}
-<button
-  type="button"
-  onClick={() => handleCheckout(plan)}
-  disabled={user?.data?.subscription_plan_id === plan.id} // disable if current
-  className={`mt-6 px-6 w-full rounded-lg font-semibold transition duration-300 flex items-center justify-center gap-2 py-2 sm:px-5 sm:py-2.5 md:px-7 md:py-3 text-sm sm:text-base
+              {/* Button */}
+              <button
+                type="button"
+                onClick={() => handleCheckout(plan)}
+                disabled={user?.data?.subscription_plan_id === plan.id} // disable if current
+                className={`mt-6 px-6 w-full rounded-lg font-semibold transition duration-300 flex items-center justify-center gap-2 py-2 sm:px-5 sm:py-2.5 md:px-7 md:py-3 text-sm sm:text-base
     ${
       user?.data?.subscription_plan_id === plan.id
         ? "bg-green-600 text-white border-green-600 cursor-not-allowed"
         : "border border-Primary bg-Primary text-black hover:bg-Primary/90"
     }`}
->
-  {user?.data?.subscription_plan_id === plan.id
-    ? "Current Plan"
-    : "Unlock This Plan"}
-</button>
-
+              >
+                {user?.data?.subscription_plan_id === plan.id
+                  ? "Current Plan"
+                  : "Unlock This Plan"}
+              </button>
 
               {/* Features */}
               <div className="flex flex-col gap-3 mt-5">

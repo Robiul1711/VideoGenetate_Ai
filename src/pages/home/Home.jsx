@@ -22,7 +22,7 @@ const AllData= data?.data || [];
     <div>
       <div className="section-padding-y">
         <Banner BannerData={AllData} isLoading={isLoading} />
-        <VideoGenerate />
+        <VideoGenerate AllData={AllData} />
       </div>
       <PowerfulFeatures AllData={AllData} />
       <DiscoverAi AllData={AllData} />

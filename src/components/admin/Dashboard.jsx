@@ -5,7 +5,7 @@ import CommonButton from "../common/CommonButton";
 import { FaFileVideo } from "react-icons/fa6";
 import { BiSolidCrown } from "react-icons/bi";
 import { FaGooglePlay } from "react-icons/fa";
-import { SiGoogleanalytics } from "react-icons/si";
+import { MdOutlineCreditScore } from "react-icons/md";
 import VideoEditorInterface from "../common/Dashboard_Components/VideoEditorInterface";
 import useAxiosSecure from "@/hooks/useAxiosSecure";
 import { useQuery } from "@tanstack/react-query";
@@ -22,14 +22,20 @@ const Dashboard = () => {
     },
   });
 
-  // Skeleton/Loading state
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen text-white">
-        Loading Dashboard...
+if (isLoading) {
+  return (
+    <div className="flex items-center justify-center min-h-[80vh]">
+      <div className="flex flex-col items-center space-y-4">
+        {/* Spinner */}
+        <div className="w-12 h-12 border-4 border-yellow-500 border-t-transparent border-solid rounded-full animate-spin"></div>
+        {/* Loading text */}
+        <p className="text-yellow-500 text-lg font-medium">Loading Dashboard...</p>
       </div>
-    );
-  }
+    </div>
+  );
+}
+
+
 
   const data = [
     {
@@ -50,7 +56,7 @@ const Dashboard = () => {
       title: "Video Credits",
       count: dashboard?.data?.video_credits_total || 0,
       icon: (
-        <SiGoogleanalytics className="text-5xl text-Primary p-3 bg-Primary/10 rounded-full" />
+        <MdOutlineCreditScore className="text-5xl text-Primary p-3 bg-Primary/10 rounded-full" />
       ),
     },
   ];
@@ -107,7 +113,7 @@ const Dashboard = () => {
 
         {/* Submit Button */}
         <CommonButton
-          link={"/dashboard/video-editor-interface"}
+          // link={"/dashboard/video-editor-interface"}
           variant="secondary"
           className="mt-8 rounded-full flex items-center gap-2 mx-auto"
         >

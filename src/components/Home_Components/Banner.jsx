@@ -9,7 +9,7 @@ const Banner = ({ BannerData, isLoading }) => {
         // 🔹 Skeleton Loader
         <div className="animate-pulse w-full flex flex-col items-center">
           <div className="h-10 w-2/3 bg-gray-700 rounded mb-6"></div>
-          <div className="h-6 w-1/2 bg-gray-700 rounded mb-4"></div>
+          <div className="h-20 w-full bg-gray-700 rounded mb-4"></div>
           <div className="h-10 w-40 bg-gray-700 rounded-full mt-12"></div>
         </div>
       ) : (
