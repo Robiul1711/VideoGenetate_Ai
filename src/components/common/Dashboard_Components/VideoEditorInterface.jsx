@@ -1,115 +1,102 @@
-import React from 'react';
-import { Play, Download, Share2, Save, RotateCcw, Edit3 } from 'lucide-react';
+import React from "react";
+import { Play, Download, Share2, RotateCcw, Edit3 } from "lucide-react";
+import useAxiosSecure from "@/hooks/useAxiosSecure";
 
-export default function VideoEditorInterface() {
+export default function VideoEditorInterface({ videoData }) {
+  // Handler for download
+  const handleDownload = async () => {
+    try {
+      const videoUrl = videoData?.data?.video_url; // Replace with actual video URL from API
+      const thumbnail = videoData?.data?.thumbnail; // Example: get thumbnail
+      const title = videoData?.data?.title || "video";
+
+      // Fetch video as blob
+      const res = await fetch(videoUrl);
+      const blob = await res.blob();
+
+      // Create a temporary link to download
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `${title}.mp4`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+
+      console.log("Thumbnail or other value:", thumbnail);
+      // You can now update state or call any setter to store thumbnail
+    } catch (err) {
+      console.error("Download failed:", err);
+    }
+  };
+
   return (
     <div className="mt-10">
-      <div className=" mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[600px]">
-          
+      <div className="mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Video Preview Section */}
-          <div className="lg:col-span-2 bg-black/20 backdrop-blur-sm rounded-2xl border border-white/10 overflow-hidden relative">
-            {/* Video Preview */}
-            <div className="relative h-full bg-gradient-to-br from-blue-900 to-purple-900 flex items-center justify-center">
-              {/* Simulated video editing interface */}
-              <div className="absolute inset-4 bg-black/50 rounded-lg overflow-hidden">
-                <div className="h-full bg-gradient-to-br from-cyan-500 to-blue-600 relative">
-                  {/* Video content simulation */}
-                  <div className="absolute inset-0 bg-black/30"></div>
-                  <div className="absolute top-4 left-4 right-4">
-                    <div className="flex space-x-2">
-                      <div className="w-2 h-2 bg-red-500 rounded-full"></div>
-                      <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
-                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                    </div>
-                  </div>
-                  
-                  {/* Central figure/character */}
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-32 h-48 bg-gradient-to-b from-gray-700 to-gray-900 rounded-lg opacity-80"></div>
-                  </div>
-                  
-                  {/* Video editing timeline at bottom */}
-                  <div className="absolute bottom-4 left-4 right-4">
-                    <div className="bg-black/50 rounded-lg p-2">
-                      <div className="flex space-x-1 mb-2">
-                        <div className="flex-1 h-8 bg-orange-500 rounded"></div>
-                        <div className="flex-1 h-8 bg-red-500 rounded"></div>
-                        <div className="flex-1 h-8 bg-purple-500 rounded"></div>
-                        <div className="flex-1 h-8 bg-blue-500 rounded"></div>
-                      </div>
-                      <div className="h-1 bg-white/20 rounded-full">
-                        <div className="h-full w-1/3 bg-white rounded-full"></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              {/* Play button overlay */}
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <div className="w-16 h-16 bg-yellow-400 rounded-full flex items-center justify-center shadow-2xl">
-                  <Play className="w-8 h-8 text-black ml-1" fill="currentColor" />
-                </div>
-              </div>
-            </div>
+          <div className="relative bg-black rounded-2xl overflow-hidden col-span-2 aspect-video">
+            <video
+              src={videoData?.data?.video_url} // actual video URL
+              controls
+              className="w-full h-full object-cover rounded-2xl"
+            />
           </div>
-          
+
           {/* Video Details Panel */}
-          <div className="bg-Primary/5 border border-Primary/30 backdrop-blur-sm rounded-2xl p-6">
-            {/* Header */}
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-white text-xl font-semibold">Video Details</h2>
-              <Edit3 className="w-5 h-5 text-gray-400 hover:text-white cursor-pointer transition-colors" />
-            </div>
-            
-            {/* Description */}
-            <p className="text-gray-300 text-sm leading-relaxed mb-8">
-              A cinematic drone shot of a coastal city at sunset, with waves crashing against the 
-              shore and city lights beginning to turn on.
-            </p>
-            
-            {/* Video Properties */}
-            <div className="space-y-6 mb-8">
-              <div className="flex justify-between items-center">
-                <span className="text-gray-400 text-sm">Style</span>
-                <span className="text-white text-sm font-medium">Funny Video</span>
+          <div className="bg-Primary/5 border border-Primary/30 backdrop-blur-sm rounded-2xl p-4 flex flex-col justify-between">
+            <div>
+              <div className="flex items-center justify-between mb-4 ">
+                <h2 className="text-white text-lg sm:text-xl font-semibold">
+                  Video Details
+                </h2>
+                <Edit3 className="w-5 h-5 text-gray-400 hover:text-white cursor-pointer transition-colors" />
               </div>
-              
-              <div className="flex justify-between items-center">
-                <span className="text-gray-400 text-sm">Duration</span>
-                <span className="text-white text-sm font-medium">15 seconds</span>
+
+              <p className="text-gray-300 text-sm leading-relaxed mb-6 sm:mb-8">
+                {videoData?.data?.prompt}
+              </p>
+
+              <div className="space-y-3 mb-4">
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-400 text-xs sm:text-sm">Style</span>
+                  <span className="text-white text-sm font-medium">
+                    {videoData?.data?.video_type_detail?.name}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-400 text-xs sm:text-sm">Duration</span>
+                  <span className="text-white text-sm font-medium">
+                    {videoData?.data?.duration || "Processing..."}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-400 text-xs sm:text-sm">Resolution</span>
+                  <span className="text-white text-sm font-medium">
+                    {videoData?.data?.resolution}
+                  </span>
+                </div>
               </div>
-              
-              <div className="flex justify-between items-center">
-                <span className="text-gray-400 text-sm">Resolution</span>
-                <span className="text-white text-sm font-medium">1080p</span>
+
+              {/* Action Buttons */}
+              <div className="grid grid-cols-2 gap-2 mb-3">
+                <button
+                  onClick={handleDownload}
+                  className="bg-gray-800/50 hover:bg-gray-700/50 border border-gray-600/50 rounded-xl p-2 text-center transition-all duration-200 hover:scale-105"
+                >
+                  <Download className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-400 mx-auto mb-1 sm:mb-2" />
+                  <span className="text-white text-xs sm:text-sm font-medium">
+                    Download
+                  </span>
+                </button>
+
+                <button className="bg-gray-800/50 hover:bg-gray-700/50 border border-gray-600/50 rounded-xl p-2 text-center transition-all duration-200 hover:scale-105">
+                  <Share2 className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-400 mx-auto mb-1 sm:mb-2" />
+                  <span className="text-white text-xs sm:text-sm font-medium">Share</span>
+                </button>
               </div>
             </div>
-            
-            {/* Action Buttons */}
-            <div className="grid grid-cols-3 gap-4 mb-6">
-              <button className="bg-gray-800/50 hover:bg-gray-700/50 border border-gray-600/50 rounded-xl p-4 text-center transition-all duration-200 hover:scale-105">
-                <Download className="w-6 h-6 text-yellow-400 mx-auto mb-2" />
-                <span className="text-white text-sm font-medium">Download</span>
-              </button>
-              
-              <button className="bg-gray-800/50 hover:bg-gray-700/50 border border-gray-600/50 rounded-xl p-4 text-center transition-all duration-200 hover:scale-105">
-                <Share2 className="w-6 h-6 text-yellow-400 mx-auto mb-2" />
-                <span className="text-white text-sm font-medium">Share</span>
-              </button>
-              
-              <button className="bg-gray-800/50 hover:bg-gray-700/50 border border-gray-600/50 rounded-xl p-4 text-center transition-all duration-200 hover:scale-105">
-                <Save className="w-6 h-6 text-yellow-400 mx-auto mb-2" />
-                <span className="text-white text-sm font-medium">Save</span>
-              </button>
-            </div>
-            
-            {/* Generate Another Button */}
-            <button className="w-full bg-yellow-400 hover:bg-yellow-300 text-black font-semibold py-4 px-6 rounded-xl transition-all duration-200 hover:scale-105 flex items-center justify-center space-x-2">
-              <span>Generate Another Now</span>
-              <RotateCcw className="w-5 h-5" />
-            </button>
           </div>
         </div>
       </div>
