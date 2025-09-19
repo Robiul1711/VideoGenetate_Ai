@@ -49,7 +49,7 @@ const VideoGenerate = ({ AllData }) => {
                 <Title level="title20" className="text-white mb-2 font-semibold">
                   Select video type
                 </Title>
-                <SelectInput />
+                {/* <SelectInput /> */}
               </div>
 
               {/* Prompt Input */}

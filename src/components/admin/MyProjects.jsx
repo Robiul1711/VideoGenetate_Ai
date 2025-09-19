@@ -5,9 +5,11 @@ import VideoCardInterface from '../common/Dashboard_Components/VideoCardInterfac
 import { useQuery } from '@tanstack/react-query';
 import useAxiosSecure from '@/hooks/useAxiosSecure';
 import SearchInput from './SearchInput';
+import VideoCardSkeleton from '../common/Dashboard_Components/VideoCardSkeleton';
 
 const MyProjects = () => {
-   const [searchValue, setSearchValue] = useState("");
+  const [searchValue, setSearchValue] = useState("");
+  console.log(searchValue);
   const placeholders = [
     "Describe your scene for an AI video...",
     "Enter a concept to generate a video...",
@@ -19,26 +21,31 @@ const MyProjects = () => {
     "Create a cinematic AI video scene...",
     "Design an AI-generated character animation...",
     "Turn your text into a video..."
-];
+  ];
 
-    const AxiosSecure = useAxiosSecure();
+  const AxiosSecure = useAxiosSecure();
   const [playingId, setPlayingId] = useState(null); // Only one playing video
+
   // Fetch dashboard data
   const { data: ListVideo, isLoading } = useQuery({
     queryKey: ["listVideo"],
     queryFn: async () => {
-      const res = await AxiosSecure.get("/video-generator/projects/");
+      const res = await AxiosSecure.get("/video-generator/projects/", { params: { video_type: searchValue } });
       return res.data;
     },
   });
-console.log(ListVideo);
+
   return (
     <div className="p-6 space-y-6">
       {/* Header */}
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         {/* Search */}
         <div className="w-full max-w-md">
-          <SearchInput searchValue={searchValue} setSearchValue={setSearchValue} placeholders={placeholders}/>
+          <SearchInput
+            searchValue={searchValue}
+            setSearchValue={setSearchValue}
+            placeholders={placeholders}
+          />
         </div>
 
         {/* Button */}
@@ -51,21 +58,26 @@ console.log(ListVideo);
         </CommonButton>
       </div>
 
-      {/* Optional: Add your projects listing here */}
-      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {ListVideo?.data?.map((video) => (
-         <VideoCardInterface
+
+<div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+  {isLoading
+    ? Array.from({ length: ListVideo?.data?.length || 8 }).map((_, index) => (
+        <VideoCardSkeleton key={index} />
+      ))
+    : ListVideo?.data?.map((video) => (
+        <VideoCardInterface
           key={video.id}
           project={video}
           isPlaying={playingId === video.id}
           onPlay={() => setPlayingId(video.id)}
           onStop={() => setPlayingId(null)}
         />
-        ))}
-      </div>
+      ))}
+</div>
+
+
     </div>
   );
 };
 
 export default MyProjects;
-

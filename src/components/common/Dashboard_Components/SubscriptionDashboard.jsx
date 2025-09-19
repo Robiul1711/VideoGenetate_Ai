@@ -14,26 +14,39 @@ export default function SubscriptionDashboard() {
       return res.data;
     },
   });
-  console.log(subscription?.data?.subscription?.plan?.features);
+
   // Skeleton/Loading state
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen text-white">
+      <div className="flex items-center justify-center min-h-[20vh] text-white">
         Loading Dashboard...
       </div>
     );
   }
 
-  // Calculate progress percentage (34/50 = 68%)
-const radius = 45;
-const circumference = 2 * Math.PI * radius;
+  // Handle no subscription case
+  if (!subscription?.data?.subscription) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[20vh] text-white text-center space-y-4">
+        <h2 className="text-2xl font-bold">No subscription available</h2>
+        <p className="text-gray-400">Please purchase a plan to unlock features.</p>
+        <button className="bg-yellow-400 hover:bg-yellow-300 text-black font-semibold px-6 py-3 rounded-lg transition-colors">
+          Upgrade Plan
+        </button>
+      </div>
+    );
+  }
 
-const progress =
-  (subscription?.data?.subscription?.plan?.credits_remaining /
-    subscription?.data?.subscription?.plan?.video_credits) *
-  100;
+  // Calculate progress percentage
+  const radius = 45;
+  const circumference = 2 * Math.PI * radius;
 
-const strokeDashoffset = circumference - (progress / 100) * circumference;
+  const progress =
+    (subscription?.data?.subscription?.plan?.credits_remaining /
+      subscription?.data?.subscription?.plan?.video_credits) *
+    100;
+
+  const strokeDashoffset = circumference - (progress / 100) * circumference;
 
   return (
     <div className="w-full px-4 sm:px-6 lg:px-12 py-8">
@@ -59,10 +72,6 @@ const strokeDashoffset = circumference - (progress / 100) * circumference;
               </span>
             </div>
           </div>
-
-          {/* <button className="w-full sm:w-auto bg-yellow-400 hover:bg-yellow-300 text-black font-semibold px-6 sm:px-8 py-3 rounded-lg transition-colors">
-            Manage Plan
-          </button> */}
         </div>
 
         {/* Center Section - Credits Circle */}
@@ -115,7 +124,6 @@ const strokeDashoffset = circumference - (progress / 100) * circumference;
           {subscription?.data?.subscription?.plan?.features?.map(
             (feature, index) => (
               <div key={index} className="flex items-center space-x-3">
-                {console.log(feature)}
                 <div className="flex-shrink-0 w-5 h-5 bg-yellow-400 rounded-full flex items-center justify-center">
                   <Check className="w-3 h-3 text-black" strokeWidth={3} />
                 </div>
