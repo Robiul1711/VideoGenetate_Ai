@@ -1,4 +1,3 @@
-import MyPricePlan from "@/components/common/Dashboard_Components/MyPricePlan";
 import ChoosePlan from "@/components/Home_Components/ChoosePlan";
 import React from "react";
 

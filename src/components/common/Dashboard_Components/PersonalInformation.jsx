@@ -76,9 +76,8 @@ useEffect(() => {
   const onSubmit = (data) => {
     updateProfileMutation.mutate(data);
   };
-  console.log(preview);
   return (
-    <div className="flex items-center justify-center p-4">
+    <div className="flex items-center justify-center ">
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="w-full max-w-2xl bg-Primary/10 backdrop-blur-sm rounded-2xl border border-gray-700/50 p-6 md:p-8"

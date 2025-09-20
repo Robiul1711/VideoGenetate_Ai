@@ -13,7 +13,7 @@ const Navbar = () => {
   const [isAnimating, setIsAnimating] = useState(false);
   const navigate = useNavigate();
   const location = useLocation(); // ✅ track current route
-  const { user, logout,loading } = useAuth();
+  const { user, logout, loading } = useAuth();
 
   const tabs = [
     { label: "Home", path: "/" },
@@ -104,24 +104,23 @@ const Navbar = () => {
           </ul>
         </div>
 
-{/* Sign In / User */}
-<div className="hidden md:block">
-  {loading ? (
-    // Skeleton UI while loading
-    <div className="w-10 h-10 bg-gray-300/30 animate-pulse rounded-full" />
-  ) : user ? (
-    <UserDropdown user={user} onLogout={logout} loading={loading} />
-  ) : (
-    <CommonButton
-      link={"/auth/sign-in"}
-      variant="secondary"
-      className="rounded-full"
-    >
-      Sign In
-    </CommonButton>
-  )}
-</div>
-
+        {/* Sign In / User */}
+        <div className="hidden md:block">
+          {loading ? (
+            // Skeleton UI while loading
+            <div className="w-10 h-10 bg-gray-300/30 animate-pulse rounded-full" />
+          ) : user ? (
+            <UserDropdown user={user} onLogout={logout} loading={loading} />
+          ) : (
+            <CommonButton
+              link={"/auth/sign-in"}
+              variant="secondary"
+              className="rounded-full"
+            >
+              Sign In
+            </CommonButton>
+          )}
+        </div>
 
         {/* Mobile Menu Button */}
         <div className="md:hidden flex items-center">

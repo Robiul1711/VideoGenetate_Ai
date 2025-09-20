@@ -134,12 +134,12 @@ const SideBar = ({ sidebar, open, setOpen }) => {
           })}
 
           {/* Logout */}
-          <div className="flex absolute bottom-6 w-[80%] items-center gap-3 text-red-700 cursor-pointer  transition  rounded-lg px-4 py-2">
+          {/* <div className="flex absolute bottom-6 w-[80%] items-center gap-3 text-red-700 cursor-pointer  transition  rounded-lg px-4 py-2">
             <span>
               <IoLogOutOutline size={20} />
             </span>
             <p className="font-medium ">Log Out</p>
-          </div>
+          </div> */}
         </div>
       </div>
     </>
