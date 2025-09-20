@@ -22,47 +22,47 @@ const Dashboard = () => {
     },
   });
 
-if (isLoading) {
-  return (
-    <div className="flex items-center justify-center min-h-[80vh]">
-      <div className="flex flex-col items-center space-y-4">
-        {/* Spinner */}
-        <div className="w-12 h-12 border-4 border-yellow-500 border-t-transparent border-solid rounded-full animate-spin"></div>
-        {/* Loading text */}
-        <p className="text-yellow-500 text-lg font-medium">Loading Dashboard...</p>
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[80vh]">
+        <div className="flex flex-col items-center space-y-4">
+          {/* Spinner */}
+          <div className="w-12 h-12 border-4 border-yellow-500 border-t-transparent border-solid rounded-full animate-spin"></div>
+          {/* Loading text */}
+          <p className="text-yellow-500 text-lg font-medium">
+            Loading Dashboard...
+          </p>
+        </div>
       </div>
-    </div>
-  );
-}
-
-
+    );
+  }
 
   const data = [
     {
       title: "Total Videos Created",
       count: dashboard?.data?.total_videos_created || 0,
       icon: (
-        <FaGooglePlay className="text-5xl text-Primary p-3 bg-Primary/10 rounded-full" />
+        <FaGooglePlay className="text-5xl sm:text-5xl text-Primary p-3 bg-Primary/10 rounded-full" />
       ),
     },
     {
       title: "Subscription Plan",
       count: dashboard?.data?.subscription_plan || "Free",
       icon: (
-        <BiSolidCrown className="text-5xl text-Primary p-3 bg-Primary/10 rounded-full" />
+        <BiSolidCrown className="text-5xl sm:text-5xl text-Primary p-3 bg-Primary/10 rounded-full" />
       ),
     },
     {
       title: "Video Credits",
       count: dashboard?.data?.video_credits_total || 0,
       icon: (
-        <MdOutlineCreditScore className="text-5xl text-Primary p-3 bg-Primary/10 rounded-full" />
+        <MdOutlineCreditScore className="text-5xl sm:text-5xl text-Primary p-3 bg-Primary/10 rounded-full" />
       ),
     },
   ];
 
   return (
-    <div className="p-8 space-y-10">
+    <div className="sm:p-4 p-3 md:p-8  space-y-5 sm:space-y-10">
       {/* Dashboard Summary Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 ">
         {data.map((item, index) => (
@@ -84,7 +84,7 @@ if (isLoading) {
       </div>
 
       {/* Video Generator Form */}
-<VideoGeneratorForm />
+      <VideoGeneratorForm />
     </div>
   );
 };

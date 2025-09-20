@@ -20,6 +20,7 @@ import PaymentSuccess from "@/pages/SuccessAndCancle/PaymentSuccess";
 
 import { createBrowserRouter } from "react-router-dom";
 import PrivateRoute from "./PrivateRoute";
+import EditVIdeo from "@/components/admin/EditVIdeo";
 
 const router = createBrowserRouter([
   // Auth
@@ -88,6 +89,10 @@ const router = createBrowserRouter([
       {
         path: "/dashboard",
         element: <Dashboard />,
+      },
+      {
+        path: "edit/:id",
+        element: <EditVIdeo />,
       },
 
       {

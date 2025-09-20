@@ -76,7 +76,7 @@ const handleCheckout = (plan) => {
       </div>
 
       {/* Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 xl:gap-6">
         {Plans?.data?.map((plan, index) => (
           <a
             key={index}
@@ -104,7 +104,7 @@ const handleCheckout = (plan) => {
                 type="button"
                 onClick={() => handleCheckout(plan)}
                 disabled={user?.data?.subscription_plan_id === plan.id} // disable if current
-                className={`mt-6 px-6 w-full rounded-lg font-semibold transition duration-300 flex items-center justify-center gap-2 py-2 sm:px-5 sm:py-2.5 md:px-7 md:py-3 text-sm sm:text-base
+                className={`mt-6 px-6 w-full rounded-lg font-semibold transition duration-300 flex items-center justify-center gap-2 py-2 sm:px-5 sm:py-2.5 md:px-7 md:py-2 text-sm sm:text-base
     ${
       user?.data?.subscription_plan_id === plan.id
         ? "bg-green-600 text-white border-green-600 cursor-not-allowed"

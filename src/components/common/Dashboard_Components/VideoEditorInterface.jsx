@@ -1,14 +1,18 @@
 import React from "react";
-import { Play, Download, Share2, RotateCcw, Edit3 } from "lucide-react";
-import useAxiosSecure from "@/hooks/useAxiosSecure";
+import { Download, Share2, Edit3 } from "lucide-react";
 
 export default function VideoEditorInterface({ videoData }) {
   // Handler for download
   const handleDownload = async () => {
     try {
-      const videoUrl = videoData?.data?.video_url; // Replace with actual video URL from API
-      const thumbnail = videoData?.data?.thumbnail; // Example: get thumbnail
+      const videoUrl = videoData?.data?.video_url;
+      const thumbnail = videoData?.data?.thumbnail;
       const title = videoData?.data?.title || "video";
+
+      if (!videoUrl) {
+        console.error("No video URL found");
+        return;
+      }
 
       // Fetch video as blob
       const res = await fetch(videoUrl);
@@ -25,9 +29,30 @@ export default function VideoEditorInterface({ videoData }) {
       window.URL.revokeObjectURL(url);
 
       console.log("Thumbnail or other value:", thumbnail);
-      // You can now update state or call any setter to store thumbnail
     } catch (err) {
       console.error("Download failed:", err);
+    }
+  };
+
+  // Handler for share
+  const handleShare = async () => {
+    const shareData = {
+      title: videoData?.data?.title || "My Video",
+      text: "Check out this video!",
+      url: videoData?.data?.video_url || window.location.href,
+    };
+
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+        console.log("Shared successfully!");
+      } catch (err) {
+        console.error("Share failed:", err);
+      }
+    } else {
+      // fallback
+      navigator.clipboard.writeText(shareData.url);
+      alert("Sharing is not supported. Link copied to clipboard!");
     }
   };
 
@@ -38,7 +63,7 @@ export default function VideoEditorInterface({ videoData }) {
           {/* Video Preview Section */}
           <div className="relative bg-black rounded-2xl overflow-hidden col-span-2 aspect-video">
             <video
-              src={videoData?.data?.video_url} // actual video URL
+              src={videoData?.data?.video_url}
               controls
               className="w-full h-full object-cover rounded-2xl"
             />
@@ -51,7 +76,7 @@ export default function VideoEditorInterface({ videoData }) {
                 <h2 className="text-white text-lg sm:text-xl font-semibold">
                   Video Details
                 </h2>
-                <Edit3 className="w-5 h-5 text-gray-400 hover:text-white cursor-pointer transition-colors" />
+                {/* <Edit3 className="w-5 h-5 text-gray-400 hover:text-white cursor-pointer transition-colors" /> */}
               </div>
 
               <p className="text-gray-300 text-sm leading-relaxed mb-6 sm:mb-8">
@@ -66,13 +91,17 @@ export default function VideoEditorInterface({ videoData }) {
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-400 text-xs sm:text-sm">Duration</span>
+                  <span className="text-gray-400 text-xs sm:text-sm">
+                    Duration
+                  </span>
                   <span className="text-white text-sm font-medium">
                     {videoData?.data?.duration || "Processing..."}
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-400 text-xs sm:text-sm">Resolution</span>
+                  <span className="text-gray-400 text-xs sm:text-sm">
+                    Resolution
+                  </span>
                   <span className="text-white text-sm font-medium">
                     {videoData?.data?.resolution}
                   </span>
@@ -81,6 +110,7 @@ export default function VideoEditorInterface({ videoData }) {
 
               {/* Action Buttons */}
               <div className="grid grid-cols-2 gap-2 mb-3">
+                {/* Download Button */}
                 <button
                   onClick={handleDownload}
                   className="bg-gray-800/50 hover:bg-gray-700/50 border border-gray-600/50 rounded-xl p-2 text-center transition-all duration-200 hover:scale-105"
@@ -91,9 +121,15 @@ export default function VideoEditorInterface({ videoData }) {
                   </span>
                 </button>
 
-                <button className="bg-gray-800/50 hover:bg-gray-700/50 border border-gray-600/50 rounded-xl p-2 text-center transition-all duration-200 hover:scale-105">
+                {/* Share Button */}
+                <button
+                  onClick={handleShare}
+                  className="bg-gray-800/50 hover:bg-gray-700/50 border border-gray-600/50 rounded-xl p-2 text-center transition-all duration-200 hover:scale-105"
+                >
                   <Share2 className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-400 mx-auto mb-1 sm:mb-2" />
-                  <span className="text-white text-xs sm:text-sm font-medium">Share</span>
+                  <span className="text-white text-xs sm:text-sm font-medium">
+                    Share
+                  </span>
                 </button>
               </div>
             </div>

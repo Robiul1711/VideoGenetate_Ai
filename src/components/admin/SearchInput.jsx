@@ -6,7 +6,7 @@ import { AnimatePresence, motion } from "framer-motion";
 // react icons
 import { CiSearch } from "react-icons/ci";
 
-const SearchInput = ({ placeholders, searchValue, setSearchValue }) => {
+const SearchInput = ({ placeholders, searchValue, setSearchValue, className, ...props }) => {
   const [isFoucsed, setIsFocused] = useState(false);
   const [currentPlaceholder, setCurrentPlaceholder] = useState(0);
 
@@ -20,16 +20,17 @@ const SearchInput = ({ placeholders, searchValue, setSearchValue }) => {
   }, [searchValue, placeholders.length]);
 
   return (
-    <div className="relative w-full lg:w-[85%] border dark:border-slate-700 border-Primary rounded-full">
+    <div className={`${className} relative w-full lg:w-[85%]  border dark:border-slate-700 border-Primary rounded-full`}>
       <CiSearch className="absolute left-4 top-1/2 dark:text-slate-500 transform -translate-y-1/2 text-gray-400 text-[1.5rem]" />
 
       <input
+        {...props}
         type="text"
         value={searchValue}
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
         onChange={(e) => setSearchValue(e.target.value)}
-        className="w-full py-3.5  rounded-full border border-transparent outline-none pr-3 pl-12"
+        className={`${className} w-full py-3.5  rounded-full border border-transparent outline-none pr-3 pl-12`}
       />
       {!searchValue && !isFoucsed && (
         <div className="absolute left-12 top-1/2 transform -translate-y-1/2 pointer-events-none">

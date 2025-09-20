@@ -1,11 +1,12 @@
 import React from "react";
-import { Download, Trash2, Play, X } from "lucide-react";
+import { Download, Trash2, Play, X, Edit3 } from "lucide-react";
 import dayjs from "dayjs";
 import video_file from "@/assets/video/ai.mp4";
 import videoimg from "@/assets/images/video-img.png";
 import useAxiosSecure from "@/hooks/useAxiosSecure";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { showLoadingToast, updateToastError, updateToastSuccess } from "@/lib/utils";
+import { Link } from "react-router-dom";
 export default function VideoCardInterface({
   project,
   isPlaying,
@@ -108,24 +109,39 @@ const DeleteMutation=useMutation({
             <p className="text-sm">{formattedDate}</p>
           </div>
 
-          {/* Action Buttons */}
-          <div className="flex space-x-3">
-            {/* Download Button */}
+{/* Action Buttons */}
+<div className="flex space-x-2 xl:space-x-3">
+  {/* Download + Edit Buttons */}
+  <div className="flex flex-1 space-x-2 xl:space-x-3">
+    {/* Download Button */}
+    <a
+      href={video_file}
+      download={`${project.title}.mp4`}
+      className="flex-1 flex items-center justify-center space-x-1 xl:space-x-2 bg-transparent border border-yellow-500 text-yellow-600 hover:bg-yellow-50 px-3 xl:px-4 py-2 xl:py-2.5 rounded-lg transition-colors"
+    >
+      <Download className="xl:w-4 xl:h-4 size-3" />
+      <span className="text-sm font-medium">Download</span>
+    </a>
 
-            <a
-              href={video_file}
-              download={`${project.title}.mp4`}
-              className="flex-1 flex items-center justify-center space-x-2 bg-transparent border border-yellow-500 text-yellow-600 hover:bg-yellow-50 px-4 py-2.5 rounded-lg transition-colors"
-            >
-              <Download className="w-4 h-4" />
-              <span className="text-sm font-medium">Download</span>
-            </a>
+    {/* Edit Button */}
+    <Link
+      to={`/dashboard/edit/${project.id}`}
+       className="flex-1 flex items-center justify-center space-x-1 xl:space-x-2 bg-transparent border border-yellow-500 text-yellow-600 hover:bg-yellow-50 px-3 xl:px-4 py-2 xl:py-2.5 rounded-lg transition-colors"
+    >
+      <Edit3 className="xl:w-4 xl:h-4 size-3" />{/* React icon (lucide-react) */}
+      <span className="text-sm font-medium">Edit</span>
+    </Link>
+  </div>
 
-            {/* Delete Button */}
-            <button onClick={() => DeleteMutation.mutate(project.id)} className="flex items-center justify-center bg-transparent border border-gray-300 text-white hover:text-red-600 hover:bg-gray-50 px-3 py-2.5 rounded-lg transition-colors">
-              <Trash2 className="w-4 h-4" />
-            </button>
-          </div>
+  {/* Delete Button */}
+  <button
+    onClick={() => DeleteMutation.mutate(project.id)}
+    className="flex items-center justify-center bg-transparent border border-gray-300 text-white hover:text-red-600 hover:bg-gray-50 px-3 py-2 xl:py-2.5 rounded-lg transition-colors"
+  >
+    <Trash2 className="w-4 h-4" />
+  </button>
+</div>
+
         </div>
       </div>
 

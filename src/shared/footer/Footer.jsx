@@ -37,7 +37,7 @@ const Footer = () => {
 
         {/* Bottom Section */}
         <div className="w-full border-t border-white/20 pt-5 md:pt-8 flex flex-col md:flex-row items-center justify-between gap-4 md:gap-6 text-sm sm:text-base md:text-lg">
-          <p className="text-center md:text-left text-[#cac4c4] "> <Link to="/terms-of-service" className="hover:underline transition-all duration-200">Terms of Service</Link> | <Link to="/privacy-policy" className="hover:underline transition-all duration-200">Privacy Policy </Link></p>
+          <p className="text-center md:text-left text-[#cac4c4] "> <Link  className="hover:underline transition-all duration-200">Terms of Service</Link> | <Link  className="hover:underline transition-all duration-200">Privacy Policy </Link></p>
 {/* 
           <div className="flex gap-8 ">
             <FaFacebook className="hover:text-gray-300 cursor-pointer text-xl" />
