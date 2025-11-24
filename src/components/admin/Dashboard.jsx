@@ -21,21 +21,21 @@ const Dashboard = () => {
       return res.data;
     },
   });
-
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-[80vh]">
-        <div className="flex flex-col items-center space-y-4">
-          {/* Spinner */}
-          <div className="w-12 h-12 border-4 border-yellow-500 border-t-transparent border-solid rounded-full animate-spin"></div>
-          {/* Loading text */}
-          <p className="text-yellow-500 text-lg font-medium">
-            Loading Dashboard...
-          </p>
-        </div>
-      </div>
-    );
-  }
+console.log(dashboard)
+  // if (isLoading) {
+  //   return (
+  //     <div className="flex items-center justify-center min-h-[80vh]">
+  //       <div className="flex flex-col items-center space-y-4">
+  //         {/* Spinner */}
+  //         <div className="w-12 h-12 border-4 border-yellow-500 border-t-transparent border-solid rounded-full animate-spin"></div>
+  //         {/* Loading text */}
+  //         <p className="text-yellow-500 text-lg font-medium">
+  //           Loading Dashboard...
+  //         </p>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   const data = [
     {

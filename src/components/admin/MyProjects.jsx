@@ -40,14 +40,14 @@ const MyProjects = () => {
   const { data: ListVideo, isLoading } = useQuery({
     queryKey: ["listVideo", debouncedSearch],
     queryFn: async () => {
-      const res = await AxiosSecure.get("/video-generator/projects/", {
+      const res = await AxiosSecure.get("/video-list/", {
         params: { q: debouncedSearch },
       });
       return res.data;
     },
     keepPreviousData: true,
   });
-
+console.log(ListVideo)
   return (
     <div className="p-6 space-y-6">
       {/* Header */}
@@ -78,9 +78,9 @@ const MyProjects = () => {
           Array.from({ length: 8 }).map((_, index) => (
             <VideoCardSkeleton key={index} />
           ))
-        ) : ListVideo?.data?.length ? (
+        ) : ListVideo?.videos?.length ? (
           // Show video cards if data exists
-          ListVideo.data.map((video) => (
+          ListVideo.videos.map((video) => (
             <VideoCardInterface
               key={video.id}
               project={video}
