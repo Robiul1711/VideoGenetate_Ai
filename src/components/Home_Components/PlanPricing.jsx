@@ -12,11 +12,13 @@ import {
 import { useAuth } from "@/hooks/useAuth";
 
 const PlanPricing = ({ Plans }) => {
+  const VITE_IMG_URL = import.meta.env.VITE_IMG_URL;
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
   const CheckoutMutation = useMutation({
     mutationFn: async (data) => {
-      const response = await axiosSecure.post("stripe/checkout/", data);
+      // console.log(data)
+      const response = await axiosSecure.post(`checkout/${data.plan_id}/`, data);
       return response?.data;
     },
     onMutate: () => {
@@ -62,7 +64,7 @@ const handleCheckout = (plan) => {
     });
     return;
   }
-
+// console.log(plan.id)
   CheckoutMutation.mutate({ plan_id: plan.id });
 };
 
@@ -77,60 +79,80 @@ const handleCheckout = (plan) => {
 
       {/* Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 xl:gap-6">
-        {Plans?.data?.map((plan, index) => (
-          <a
-            key={index}
-            // href={`https://lobfile.com/api/stripe/subscription.php?plan=${plan.stripe_price_id}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex cursor-pointer flex-col justify-between h-full bg-black rounded-xl p-6 border border-gray-700 hover:border-Primary transition"
-          >
-            <div>
-              {/* Plan Name */}
-              <h3 className="text-xl text-white font-semibold">{plan.name}</h3>
+    {Plans?.data?.map((plan, index) => (
+  <a
+    key={index}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="flex cursor-pointer flex-col justify-between h-full bg-black rounded-xl p-6 border border-gray-700 hover:border-Primary transition"
+  >
+    <div>
+      {/* Image */}
+      <div className="w-full h-40 rounded-lg overflow-hidden">
+        <img
+          src={VITE_IMG_URL + plan.image}
+          alt={plan.name}
+          className="w-full h-full object-cover"
+        />
+      </div>
 
-              {/* Price */}
-              <div className="mt-6 flex items-end gap-2">
-                <h3 className="text-5xl text-Primary font-extrabold">
-                  ${plan.price}
-                </h3>
-                <span className="text-sm text-gray-400 mb-1">
-                  /{plan.interval_display || "month"}
-                </span>
-              </div>
+      {/* Plan Name */}
+      <h3 className="text-2xl text-white font-semibold mt-4">{plan.name}</h3>
 
-              {/* Button */}
-              <button
-                type="button"
-                onClick={() => handleCheckout(plan)}
-                disabled={user?.data?.subscription_plan_id === plan.id} // disable if current
-                className={`mt-6 px-6 w-full rounded-lg font-semibold transition duration-300 flex items-center justify-center gap-2 py-2 sm:px-5 sm:py-2.5 md:px-7 md:py-2 text-sm sm:text-base
-    ${
-      user?.data?.subscription_plan_id === plan.id
-        ? "bg-green-600 text-white border-green-600 cursor-not-allowed"
-        : "border border-Primary bg-Primary text-black hover:bg-Primary/90"
-    }`}
-              >
-                {user?.data?.subscription_plan_id === plan.id
-                  ? "Current Plan"
-                  : "Unlock This Plan"}
-              </button>
+      {/* Price */}
+      <div className="mt-4 flex items-end gap-2">
+        <h3 className="text-5xl text-Primary font-extrabold">
+          ${plan.price}
+        </h3>
+        <span className="text-sm text-gray-400 mb-1">/month</span>
+      </div>
 
-              {/* Features */}
-              <div className="flex flex-col gap-3 mt-5">
-                {plan.features?.map((feature) => (
-                  <p
-                    key={feature.id}
-                    className="text-white text-sm flex items-center gap-2"
-                  >
-                    <MdOutlineDone className="text-Primary text-xl" />
-                    {feature.title}
-                  </p>
-                ))}
-              </div>
-            </div>
-          </a>
-        ))}
+      {/* Description */}
+      <p className="text-gray-300 text-sm mt-3 leading-relaxed">
+        {plan.description}
+      </p>
+
+      {/* Number of Videos */}
+      <p className="mt-4 text-white flex items-center gap-2 text-sm">
+        <MdOutlineDone className="text-Primary text-xl" />
+        {plan.number_of_video} Videos Included
+      </p>
+
+      {/* Features if available */}
+      {plan.features?.length > 0 && (
+        <div className="flex flex-col gap-3 mt-4">
+          {plan.features.map((feature) => (
+            <p
+              key={feature.id}
+              className="text-white text-sm flex items-center gap-2"
+            >
+              <MdOutlineDone className="text-Primary text-xl" />
+              {feature.title}
+            </p>
+          ))}
+        </div>
+      )}
+
+      {/* Button */}
+      <button
+        type="button"
+        onClick={() => handleCheckout(plan)}
+        disabled={user?.data?.subscription_plan_id === plan.id}
+        className={`mt-6 px-6 w-full rounded-lg font-semibold transition duration-300 flex items-center justify-center gap-2 py-2 text-sm
+          ${
+            user?.data?.subscription_plan_id === plan.id
+              ? "bg-green-600 text-white border-green-600 cursor-not-allowed"
+              : "border border-Primary bg-Primary text-black hover:bg-Primary/90"
+          }`}
+      >
+        {user?.data?.subscription_plan_id === plan.id
+          ? "Current Plan"
+          : "Unlock This Plan"}
+      </button>
+    </div>
+  </a>
+))}
+
       </div>
     </div>
   );

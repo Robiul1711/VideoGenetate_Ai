@@ -71,7 +71,7 @@ const router = createBrowserRouter([
         element: <PaymentSuccess />,
       },
       {
-        path: "/cancle",
+        path: "/cancel",
         element: <PaymentCancel />,
       },
     ],
