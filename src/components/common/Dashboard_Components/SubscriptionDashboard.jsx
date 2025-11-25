@@ -10,11 +10,11 @@ export default function SubscriptionDashboard() {
   const { data: subscription, isLoading } = useQuery({
     queryKey: ["my-subscription"],
     queryFn: async () => {
-      const res = await AxiosSecure.get("/me/subscription/");
+      const res = await AxiosSecure.get("/my-plan/");
       return res.data;
     },
   });
-
+  console.log(subscription);
   // Skeleton/Loading state
   if (isLoading) {
     return (
@@ -25,11 +25,13 @@ export default function SubscriptionDashboard() {
   }
 
   // Handle no subscription case
-  if (!subscription?.data?.subscription) {
+  if (!subscription?.data?.status) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[20vh] text-white text-center space-y-4">
         <h2 className="text-2xl font-bold">No subscription available</h2>
-        <p className="text-gray-400">Please purchase a plan to unlock features.</p>
+        <p className="text-gray-400">
+          Please purchase a plan to unlock features.
+        </p>
         <button className="bg-yellow-400 hover:bg-yellow-300 text-black font-semibold px-6 py-3 rounded-lg transition-colors">
           Upgrade Plan
         </button>
@@ -42,8 +44,7 @@ export default function SubscriptionDashboard() {
   const circumference = 2 * Math.PI * radius;
 
   const progress =
-    (subscription?.data?.subscription?.plan?.credits_remaining /
-      subscription?.data?.subscription?.plan?.video_credits) *
+    (subscription?.data?.remaining_video / subscription?.data?.total_video) *
     100;
 
   const strokeDashoffset = circumference - (progress / 100) * circumference;
@@ -56,7 +57,7 @@ export default function SubscriptionDashboard() {
           <div>
             <div className="flex flex-col sm:flex-row items-center lg:items-start sm:space-x-3 sm:mb-4 mb-6">
               <h1 className="text-white text-2xl sm:text-3xl font-bold">
-                {subscription?.data?.subscription?.plan?.name}
+                {subscription?.data?.plan?.name}
               </h1>
               <span className="mt-2 sm:mt-0 bg-yellow-400 text-black text-sm font-medium px-3 py-1 rounded-full">
                 Current Plan
@@ -65,11 +66,11 @@ export default function SubscriptionDashboard() {
 
             <div className="flex items-baseline justify-center lg:justify-start space-x-1">
               <span className="text-white text-3xl sm:text-4xl font-bold">
-                $ {subscription?.data?.subscription?.plan?.price}
+                $ {subscription?.data?.plan?.price}
               </span>
-              <span className="text-gray-400 text-base sm:text-lg">
+              {/* <span className="text-gray-400 text-base sm:text-lg">
                 /{subscription?.data?.subscription?.plan?.interval_display}
-              </span>
+              </span> */}
             </div>
           </div>
         </div>
@@ -109,8 +110,8 @@ export default function SubscriptionDashboard() {
             {/* Center content */}
             <div className="absolute inset-0 flex flex-col items-center justify-center">
               <div className="text-white text-2xl sm:text-3xl font-bold">
-                {subscription?.data?.subscription?.plan?.credits_remaining}/
-                {subscription?.data?.subscription?.plan?.video_credits}
+                {subscription?.data?.remaining_video}/
+                {subscription?.data?.total_video}
               </div>
               <div className="text-gray-400 text-xs sm:text-sm mt-1">
                 Credits Remaining
@@ -121,18 +122,14 @@ export default function SubscriptionDashboard() {
 
         {/* Right Section - Features List */}
         <div className="space-y-4">
-          {subscription?.data?.subscription?.plan?.features?.map(
-            (feature, index) => (
-              <div key={index} className="flex items-center space-x-3">
-                <div className="flex-shrink-0 w-5 h-5 bg-yellow-400 rounded-full flex items-center justify-center">
-                  <Check className="w-3 h-3 text-black" strokeWidth={3} />
-                </div>
-                <span className="text-white text-sm sm:text-base">
-                  {feature?.title}
-                </span>
-              </div>
-            )
-          )}
+          <div className="flex items-center space-x-3">
+            <div className="flex-shrink-0 w-5 h-5 bg-yellow-400 rounded-full flex items-center justify-center">
+              <Check className="w-3 h-3 text-black" strokeWidth={3} />
+            </div>
+            <span className="text-white text-sm sm:text-base">
+              {subscription?.data?.plan?.description}
+            </span>
+          </div>
         </div>
       </div>
     </div>

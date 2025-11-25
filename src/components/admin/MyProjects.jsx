@@ -9,8 +9,11 @@ import VideoCardSkeleton from "../common/Dashboard_Components/VideoCardSkeleton"
 
 const MyProjects = () => {
   const [searchValue, setSearchValue] = useState("");
-  const [debouncedSearch, setDebouncedSearch] = useState(searchValue);
+  const [debouncedSearch, setDebouncedSearch] = useState("");
   const debounceRef = useRef(null);
+
+  const AxiosSecure = useAxiosSecure();
+  const [playingId, setPlayingId] = useState(null);
 
   const placeholders = [
     "Describe your scene for an AI video...",
@@ -25,33 +28,32 @@ const MyProjects = () => {
     "Turn your text into a video...",
   ];
 
-  const AxiosSecure = useAxiosSecure();
-  const [playingId, setPlayingId] = useState(null); // Only one playing video
-
-  // Debounce search input
+  // 🔥 Debounce search input (500ms)
   useEffect(() => {
     if (debounceRef.current) clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(() => {
       setDebouncedSearch(searchValue);
-    }, 500); // 500ms delay
+    }, 500);
   }, [searchValue]);
 
-  // Fetch dashboard data
+  // 🔥 Fetch all generated videos
   const { data: ListVideo, isLoading } = useQuery({
     queryKey: ["listVideo", debouncedSearch],
     queryFn: async () => {
       const res = await AxiosSecure.get("/video-list/", {
-        params: { q: debouncedSearch },
+        params: { search: debouncedSearch }, // ✅ FIXED SEARCH KEY
       });
       return res.data;
     },
     keepPreviousData: true,
   });
-console.log(ListVideo)
+
   return (
     <div className="p-6 space-y-6">
+
       {/* Header */}
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+
         {/* Search */}
         <div className="w-full max-w-md">
           <SearchInput
@@ -61,25 +63,24 @@ console.log(ListVideo)
           />
         </div>
 
-        {/* Button */}
+        {/* New Video Button */}
         <CommonButton
           link="/dashboard"
           variant="secondary"
-          className=" items-center gap-2 border hidden md:flex border-Primary bg-Primary/10 text-white hover:text-black"
+          className="items-center gap-2 border hidden md:flex border-Primary bg-Primary/10 text-white hover:text-black"
         >
           Create New Video <FaPlus />
         </CommonButton>
+
       </div>
 
-      {/* Video Grid */}
+      {/* Video List Grid */}
       <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {isLoading ? (
-          // Show skeletons while loading
           Array.from({ length: 8 }).map((_, index) => (
             <VideoCardSkeleton key={index} />
           ))
         ) : ListVideo?.videos?.length ? (
-          // Show video cards if data exists
           ListVideo.videos.map((video) => (
             <VideoCardInterface
               key={video.id}
@@ -90,17 +91,17 @@ console.log(ListVideo)
             />
           ))
         ) : (
-          // Fallback when no videos exist
           <div className="col-span-full text-center p-10 flex flex-col items-center justify-center bg-Primary/10 rounded-2xl border border-Primary/30">
             <p className="text-white text-lg mb-4">
-              You haven't created any videos yet.
+              No videos found matching your search.
             </p>
+
             <CommonButton
               link="/dashboard"
               variant="secondary"
               className="mx-auto flex items-center gap-2"
             >
-              Go to Dashboard to Generate Video
+              Create a Video
             </CommonButton>
           </div>
         )}

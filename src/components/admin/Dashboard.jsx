@@ -17,7 +17,7 @@ const Dashboard = () => {
   const { data: dashboard, isLoading } = useQuery({
     queryKey: ["dashboard"],
     queryFn: async () => {
-      const res = await AxiosSecure.get("/video-generator/dashboard/");
+      const res = await AxiosSecure.get("/my-plan/");
       return res.data;
     },
   });
@@ -40,21 +40,21 @@ console.log(dashboard)
   const data = [
     {
       title: "Total Videos Created",
-      count: dashboard?.data?.total_videos_created || 0,
+      count: dashboard?.data?.remaining_video || 0,
       icon: (
         <FaGooglePlay className="text-5xl sm:text-5xl text-Primary p-3 bg-Primary/10 rounded-full" />
       ),
     },
     {
-      title: "Subscription Plan",
-      count: dashboard?.data?.subscription_plan || "Free",
+      title: "My Currernt Plan",
+      count: dashboard?.data?.plan?.name || "Free",
       icon: (
         <BiSolidCrown className="text-5xl sm:text-5xl text-Primary p-3 bg-Primary/10 rounded-full" />
       ),
     },
     {
       title: "Video Credits",
-      count: dashboard?.data?.video_credits_total || 0,
+      count: dashboard?.data?.total_video || 0,
       icon: (
         <MdOutlineCreditScore className="text-5xl sm:text-5xl text-Primary p-3 bg-Primary/10 rounded-full" />
       ),

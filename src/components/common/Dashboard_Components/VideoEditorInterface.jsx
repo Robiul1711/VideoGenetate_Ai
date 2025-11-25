@@ -2,12 +2,13 @@ import React from "react";
 import { Download, Share2, Edit3 } from "lucide-react";
 
 export default function VideoEditorInterface({ videoData }) {
+ const VID_BASE_URL = import.meta.env.VITE_IMG_URL || "";
   // Handler for download
   const handleDownload = async () => {
     try {
-      const videoUrl = videoData?.data?.video_url;
-      const thumbnail = videoData?.data?.thumbnail;
-      const title = videoData?.data?.title || "video";
+      const videoUrl = videoData?.video_url;
+      const thumbnail = videoData?.thumbnail;
+      const title = videoData?.title || "video";
 
       if (!videoUrl) {
         console.error("No video URL found");
@@ -63,7 +64,7 @@ export default function VideoEditorInterface({ videoData }) {
           {/* Video Preview Section */}
           <div className="relative bg-black rounded-2xl overflow-hidden col-span-2 aspect-video">
             <video
-              src={videoData?.data?.video_url}
+              src={VID_BASE_URL + videoData?.video_url}
               controls
               className="w-full h-full object-cover rounded-2xl"
             />

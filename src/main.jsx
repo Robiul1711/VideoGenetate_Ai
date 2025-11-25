@@ -12,17 +12,13 @@ const queryClient = new QueryClient();
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <Toaster
-  position="top-center"
-  reverseOrder={false}
-/>
+    <Toaster position="top-center" reverseOrder={false} />
     <QueryClientProvider client={queryClient}>
-        <EmailProvider>
-      <AuthProvider>
-
-        <RouterProvider router={router} />
-      </AuthProvider>
-        </EmailProvider>
+      <EmailProvider>
+        <AuthProvider>
+          <RouterProvider router={router} />
+        </AuthProvider>
+      </EmailProvider>
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   </StrictMode>

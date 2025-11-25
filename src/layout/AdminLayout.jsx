@@ -30,7 +30,7 @@ const AdminLayout = () => {
     {
         id: 1,
         icon: <BiSolidCrown />,
-        text: "My Subscription",
+        text: "My Plan",
         path: "/dashboard/my-subscription", 
         activePaths: ["/dashboard/my-subscription"], 
         sublink: false,

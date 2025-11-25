@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { IoChevronDown } from "react-icons/io5";
 import { useQuery } from "@tanstack/react-query";
 import useAxiosSecure from "@/hooks/useAxiosSecure";
@@ -7,22 +7,23 @@ import { useFormContext } from "react-hook-form";
 const SelectInput = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState("Select Option");
+  const dropdownRef = useRef(null);
 
   const AxiosSecure = useAxiosSecure();
-  const { setValue } = useFormContext(); // Sync with RHF
+  const { setValue } = useFormContext();
 
   const { data: categories } = useQuery({
     queryKey: ["categories"],
     queryFn: async () => {
-      const res = await AxiosSecure.get("/video-generator/video_type/");
+      const res = await AxiosSecure.get("/categories/");
       return res.data;
     },
   });
 
-  // Close dropdown when clicking outside
+  // CLOSE when clicking outside
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (!event.target.closest(".dropdown")) {
+    const handleClickOutside = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
         setIsDropdownOpen(false);
       }
     };
@@ -31,11 +32,12 @@ const SelectInput = () => {
   }, []);
 
   return (
-    <div>
+    <div className="relative w-full" ref={dropdownRef}>
+      {/* Button */}
       <button
         type="button"
-        className="w-full border border-Primary/30 rounded-md text-white justify-between px-3 py-2 flex items-center gap-8 relative cursor-pointer dropdown"
         onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+        className="w-full border border-Primary/30 rounded-md text-white justify-between px-3 py-2 flex items-center gap-8 cursor-pointer"
       >
         {selectedItem}
         <IoChevronDown
@@ -43,30 +45,31 @@ const SelectInput = () => {
             isDropdownOpen ? "rotate-180" : "rotate-0"
           } transition-all duration-300 text-[1.2rem]`}
         />
-        <div
-          className={`${
-            isDropdownOpen
-              ? "z-[1] opacity-100 scale-100 text-black"
-              : "z-[-1] opacity-0 scale-90"
-          } w-full absolute top-12 left-0 bg-white rounded-xl flex  flex-wrap overflow-hidden transition-all duration-300 ease-in-out`}
-          style={{ boxShadow: "0 15px 60px -15px rgba(0, 0, 0, 0.3)" }}
-        >
-          {categories?.data?.map((option, index) => (
-            <p
-              key={index}
-              className="py-2 px-4 hover:bg-Primary/80 font-semibold transition-all  flex items-start  duration-200 cursor-pointer"
-              onClick={() => {
-                setSelectedItem(option.name);
-
-                setValue("video_type", option.slug, { shouldValidate: true }); // update RHF
-                setIsDropdownOpen(false);
-              }}
-            >
-              {option.name}
-            </p>
-          ))}
-        </div>
       </button>
+
+      {/* Dropdown Menu */}
+      <div
+        className={`${
+          isDropdownOpen
+            ? "opacity-100 scale-100 z-10"
+            : "opacity-0 scale-90 pointer-events-none z-[-1]"
+        } absolute w-full top-12 left-0 bg-white text-black rounded-xl flex flex-col overflow-hidden transition-all duration-300`}
+        style={{ boxShadow: "0 15px 60px -15px rgba(0, 0, 0, 0.3)" }}
+      >
+        {categories?.data?.map((option) => (
+          <p
+            key={option.id}
+            className="py-2 px-4 hover:bg-Primary/80 font-semibold transition cursor-pointer"
+       onClick={() => {
+  setSelectedItem(option.name);
+  setValue("category_id", option.id, { shouldValidate: true });
+  setIsDropdownOpen(false);
+}}
+          >
+            {option.name}
+          </p>
+        ))}
+      </div>
     </div>
   );
 };

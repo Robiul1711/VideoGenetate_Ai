@@ -4,7 +4,7 @@ import SelectInput from "@/components/Home_Components/SelectInput";
 import CommonButton from "../CommonButton";
 import { FaFileVideo } from "react-icons/fa6";
 import VideoEditorInterface from "./VideoEditorInterface";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   showLoadingToast,
   updateToastError,
@@ -15,18 +15,19 @@ import useAxiosSecure from "@/hooks/useAxiosSecure";
 
 const VideoGeneratorForm = () => {
   const AxiosSecure = useAxiosSecure();
-  const queryClient = useQueryClient();
-  const [generatedVideo, setGeneratedVideo] = useState(null);
 
-  // ✅ Ref for video editor section
+  // Will store video_id after POST
+  const [videoId, setVideoId] = useState(null);
+
+  // Scroll reference
   const videoSectionRef = useRef(null);
 
-  // React Hook Form setup
+  // RHF setup
   const methods = useForm({
     defaultValues: {
       title: "",
       prompt: "",
-      video_type: "",
+      category_id: "",
     },
   });
 
@@ -35,51 +36,53 @@ const VideoGeneratorForm = () => {
     formState: { errors },
   } = methods;
 
-  // Mutation
+  // 🔥 POST: Generate Video
   const VideoGenMutation = useMutation({
     mutationFn: async (data) => {
-      const response = await AxiosSecure.post(
-        "/video-generator/projects/",
-        data
-      );
+      const response = await AxiosSecure.post("/generate/", data);
       return response?.data;
     },
     onMutate: () => {
-      const toastId = showLoadingToast("Generating...");
+      const toastId = showLoadingToast("Generating your video...");
       return { toastId };
     },
     onSuccess: (response, _variables, context) => {
-      updateToastSuccess(
-        context.toastId,
-        response?.message || "Video generation successful"
-      );
-      queryClient.invalidateQueries({ queryKey: ["dashboard"] });
+      updateToastSuccess(context.toastId, response?.message);
 
-      setGeneratedVideo(response);
+      // Save video ID for polling
+      setVideoId(response?.video_id);
 
-      // ✅ Smooth scroll to VideoEditorInterface
+      // Scroll to the bottom where video will appear
       setTimeout(() => {
-        videoSectionRef.current?.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
-        });
-      }, 100);
+        videoSectionRef.current?.scrollIntoView({ behavior: "smooth" });
+      }, 150);
     },
     onError: (error, _variables, context) => {
-      const errorMessage =
-        error.response?.data?.message ||
-        "Something went wrong, try again later!!";
-      updateToastError(context.toastId, errorMessage);
+      const message =
+        error.response?.data?.message || "Something went wrong!";
+      updateToastError(context.toastId, message);
     },
   });
 
-  // Submit handler
+  // Submit
   const onSubmit = (data) => {
-    if (!data.video_type) {
-      return updateToastError(null, "Please select a video type first!");
+    if (!data.category_id) {
+      return updateToastError(null, "Please select a category first!");
     }
     VideoGenMutation.mutate(data);
   };
+
+  // 🔥 GET: Poll video status every 3s until completed
+  const GetVideoQuery = useQuery({
+    queryKey: ["video-status", videoId],
+    queryFn: async () => {
+      const res = await AxiosSecure.get(`/status/${videoId}/`);
+      return res.data;
+    },
+    enabled: !!videoId, // Start only when videoId exists
+    refetchInterval: (data) =>
+      data?.status === "completed" ? false : 3000, // Auto-stop when done
+  });
 
   return (
     <div>
@@ -89,77 +92,68 @@ const VideoGeneratorForm = () => {
         </Title>
 
         <FormProvider {...methods}>
-          <form
-            onSubmit={handleSubmit(onSubmit)}
-            className="flex flex-col gap-6"
-          >
-            {/* Video type selector */}
+          <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
+
+            {/* Category Selector */}
             <div>
               <Title level="title20" className="text-white mb-2">
                 Select video type
               </Title>
               <SelectInput />
-              {errors.video_type && (
+              {errors.category_id && (
                 <p className="text-red-400 text-sm mt-1">
-                  {errors.video_type.message || "Please select a video type"}
+                  {errors.category_id.message}
                 </p>
               )}
             </div>
 
-            {/* Title input */}
+            {/* Title */}
             <div>
               <Title level="title20" className="text-white mb-2">
                 Title
               </Title>
               <input
                 type="text"
-                placeholder="Enter a title for your video"
-                className="w-full p-3 bg-transparent text-white text-base font-medium leading-relaxed border border-Primary/30 rounded-lg outline-none placeholder:text-white/60"
+                placeholder="Enter a title..."
+                className="w-full p-3 bg-transparent text-white border border-Primary/30 rounded-lg outline-none placeholder:text-white/60"
                 {...methods.register("title", {
                   required: "Please enter a title",
-                  minLength: {
-                    value: 3,
-                    message: "Title must be at least 3 characters",
-                  },
+                  minLength: { value: 3, message: "Minimum 3 characters" },
                 })}
               />
               {errors.title && (
-                <p className="text-red-400 text-sm mt-1">
-                  {errors.title.message}
-                </p>
+                <p className="text-red-400 text-sm">{errors.title.message}</p>
               )}
             </div>
 
-            {/* Prompt input */}
+            {/* Prompt */}
             <div>
               <Title level="title20" className="text-white mb-2">
                 Describe your idea
               </Title>
               <textarea
-                className="w-full p-3 bg-transparent text-white resize-none text-base font-medium leading-relaxed border border-Primary/30 rounded-lg outline-none placeholder:text-white/60"
+                placeholder="Describe your video idea..."
                 rows={4}
-                placeholder="Describe your 3D object or scene..."
+                className="w-full p-3 bg-transparent text-white border border-Primary/30 rounded-lg outline-none placeholder:text-white/60 resize-none"
                 {...methods.register("prompt", {
-                  required: "Please enter your video idea",
+                  required: "Please enter your idea",
                   minLength: {
                     value: 10,
-                    message: "Prompt must be at least 10 characters",
+                    message: "Minimum 10 characters required",
                   },
                 })}
               />
               {errors.prompt && (
-                <p className="text-red-400 text-sm mt-1">
-                  {errors.prompt.message}
-                </p>
+                <p className="text-red-400 text-sm">{errors.prompt.message}</p>
               )}
             </div>
 
-            {/* Submit Button */}
+            {/* Submit */}
             <CommonButton
               type="submit"
               variant="secondary"
               disabled={VideoGenMutation.isPending}
-              className="mt-4 rounded-full flex items-center gap-2 mx-auto"
+              className="mt-4 rounded-full mx-auto flex items-center gap-2"
             >
               {VideoGenMutation.isPending ? "Generating..." : "Generate Now"}
               <FaFileVideo />
@@ -168,9 +162,21 @@ const VideoGeneratorForm = () => {
         </FormProvider>
       </div>
 
-      {/* Video Editor Section */}
+      {/* 🔥 Video Output Section */}
       <div ref={videoSectionRef} className="mt-10">
-        <VideoEditorInterface videoData={generatedVideo} />
+        {!videoId ? (
+          <p className="text-center text-gray-400">
+            Your generated video will appear here...
+          </p>
+        ) : GetVideoQuery.isLoading ||
+          GetVideoQuery.data?.status !== "completed" ? (
+          <div className="text-center text-white py-10">
+            <p className="text-xl animate-pulse">⏳ Your video is processing...</p>
+            <p className="text-sm opacity-70">This may take 20–40 seconds.</p>
+          </div>
+        ) : (
+          <VideoEditorInterface videoData={GetVideoQuery.data} />
+        )}
       </div>
     </div>
   );
