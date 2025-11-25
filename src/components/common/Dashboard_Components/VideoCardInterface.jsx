@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import { Download, Trash2, Play, X, Edit3 } from "lucide-react";
 import dayjs from "dayjs";
-import video_file from "@/assets/video/ai.mp4";
-import videoimg from "@/assets/images/video-img.png";
 import useAxiosSecure from "@/hooks/useAxiosSecure";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
@@ -21,11 +19,10 @@ export default function VideoCardInterface({
   const AxiosSecure = useAxiosSecure();
   const queryClient = useQueryClient();
 
-  // 🔥 State for Edit Title Modal
   const [isEditing, setIsEditing] = useState(false);
   const [editTitle, setEditTitle] = useState(project?.title || "");
 
-  // 🗑 Delete Mutation
+  // -------- DELETE --------
   const DeleteMutation = useMutation({
     mutationFn: async (id) => {
       const res = await AxiosSecure.delete(`/video/${id}/delete/`);
@@ -40,13 +37,14 @@ export default function VideoCardInterface({
       queryClient.invalidateQueries({ queryKey: ["listVideo"] });
     },
     onError: (error, _variables, context) => {
-      const errorMessage =
-        error.response?.data?.message || "Something went wrong!";
-      updateToastError(context.toastId, errorMessage);
+      updateToastError(
+        context.toastId,
+        error.response?.data?.message || "Something went wrong!"
+      );
     },
   });
 
-  // ✏ Edit Title Mutation
+  // -------- EDIT TITLE --------
   const EditMutation = useMutation({
     mutationFn: async ({ id, title }) => {
       const res = await AxiosSecure.put(`/video/${id}/edit/`, { title });
@@ -58,17 +56,17 @@ export default function VideoCardInterface({
     },
     onSuccess: (response, _variables, context) => {
       updateToastSuccess(context.toastId, response?.message || "Updated!");
-      queryClient.invalidateQueries({ queryKey: ["listVideo"] }); // refresh list
-      setIsEditing(false); // close modal
+      queryClient.invalidateQueries({ queryKey: ["listVideo"] });
+      setIsEditing(false);
     },
     onError: (error, _variables, context) => {
-      const err =
-        error.response?.data?.message || "Update failed!";
-      updateToastError(context.toastId, err);
+      updateToastError(
+        context.toastId,
+        error.response?.data?.message || "Update failed!"
+      );
     },
   });
 
-  // Format Data
   const formattedDate = project?.created_at
     ? dayjs(project.created_at).format("DD MMM YYYY, hh:mm A")
     : "";
@@ -81,8 +79,10 @@ export default function VideoCardInterface({
   return (
     <div className="bg-Primary/10 text-white rounded-2xl overflow-hidden shadow-2xl">
 
-      {/* Video Section */}
+      {/* ------------ VIDEO PREVIEW / PLAYER ------------ */}
       <div className="relative h-48">
+
+        {/* If playing → show full video player */}
         {isPlaying ? (
           <video
             src={VID_BASE_URL + project?.video_file}
@@ -91,42 +91,46 @@ export default function VideoCardInterface({
             autoPlay
           />
         ) : (
-          <div
-            className="relative h-full bg-white/50 backdrop-blur-md"
-            style={{
-              backgroundImage: videoimg ? `url(${videoimg})` : undefined,
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-            }}
-          >
-            <div className="absolute inset-0 bg-black/40"></div>
+          <>
+            {/* REAL VIDEO PREVIEW */}
+            <video
+              src={VID_BASE_URL + project?.video_file}
+              className="w-full h-full object-cover"
+              muted
+              playsInline
+              preload="metadata"
+            />
 
+            {/* 🔥 PLAY BUTTON (centered overlay) */}
+            <div
+              className="absolute inset-0 flex items-center justify-center cursor-pointer"
+              onClick={onPlay}
+            >
+              <div className="w-12 h-12 bg-black/40 rounded-full flex items-center justify-center hover:bg-black/60 transition">
+                <Play className="w-6 h-6 text-white ml-0.5" fill="white" />
+              </div>
+            </div>
+
+            {/* duration label */}
             <div className="absolute top-4 left-4 bg-black/60 text-white text-xs px-2 py-1 rounded">
               {formattedDuration}
             </div>
-
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div
-                className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center cursor-pointer hover:bg-white/30 transition"
-                onClick={onPlay}
-              >
-                <Play className="w-6 h-6 text-white ml-0.5" fill="currentColor" />
-              </div>
-            </div>
-          </div>
+          </>
         )}
 
+        {/* X Close Button when playing */}
         {isPlaying && (
           <div
-            className="absolute top-3 right-3 w-8 h-8 bg-black/50 rounded-full flex items-center justify-center cursor-pointer hover:bg-black/70 transition"
+            className="absolute top-3 right-3 w-8 h-8 bg-black/60 rounded-full flex items-center justify-center cursor-pointer hover:bg-black/80 transition"
             onClick={onStop}
           >
             <X className="w-4 h-4 text-white" />
           </div>
         )}
+
       </div>
 
-      {/* Content */}
+      {/* ------------ CONTENT ------------ */}
       <div className="p-6">
         <div className="mb-6">
           <h3 className="text-lg font-semibold mb-1 line-clamp-1">
@@ -135,9 +139,7 @@ export default function VideoCardInterface({
           <p className="text-sm">{formattedDate}</p>
         </div>
 
-        {/* Actions */}
         <div className="flex space-x-2">
-          {/* Download */}
           <a
             href={VID_BASE_URL + project?.video_file}
             download={`${project.title}.mp4`}
@@ -147,7 +149,6 @@ export default function VideoCardInterface({
             <span className="text-sm ml-1">Download</span>
           </a>
 
-          {/* Edit */}
           <button
             onClick={() => setIsEditing(true)}
             className="flex-1 flex items-center justify-center bg-transparent border border-yellow-500 text-yellow-600 hover:bg-yellow-50 px-3 py-2 rounded-lg"
@@ -156,7 +157,6 @@ export default function VideoCardInterface({
             <span className="text-sm ml-1">Edit</span>
           </button>
 
-          {/* Delete */}
           <button
             onClick={() => DeleteMutation.mutate(project.id)}
             className="w-10 flex items-center justify-center bg-transparent border border-gray-300 text-white hover:text-red-600 hover:bg-gray-50 rounded-lg"
@@ -166,10 +166,10 @@ export default function VideoCardInterface({
         </div>
       </div>
 
-      {/* 🔥 EDIT MODAL */}
+      {/* ------------ EDIT MODAL ------------ */}
       {isEditing && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
-          <div className="bg-Primary/20 border border-Primary p-6 rounded-xl w-full max-w-sm">
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+          <div className="bg-black/80 border border-Primary p-6 rounded-xl w-full max-w-sm">
             <h2 className="text-xl font-semibold mb-4">Edit Title</h2>
 
             <input
