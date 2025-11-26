@@ -13,14 +13,16 @@ const { data:Plans, isLoading } = useQuery({
     return res.data; // return only the data part
   },
 });
-
+console.log(Plans)
   return (
     <div className="section-padding-x py-14">
       <Title level="title40" className="text-center text-Primary mb-4">
-       {AllData?.plan_section?.title}
+       {/* {AllData?.plan_section?.title} */}
+       Powerful Features
       </Title>
       <Title level="title20" className="text-center text-white">
-       {AllData?.plan_section?.subtitle}
+       {/* {AllData?.plan_section?.subtitle} */}
+       Our AI-powered platform makes video creation effortless and accessible to everyone.
       </Title>
       <div className="mt-16">
         <PlanPricing Plans={Plans} />

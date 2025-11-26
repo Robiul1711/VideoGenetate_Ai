@@ -170,9 +170,9 @@ const VideoGeneratorForm = () => {
           </p>
         ) : GetVideoQuery.isLoading ||
           GetVideoQuery.data?.status !== "completed" ? (
-          <div className="text-center text-white py-10">
+          <div className="text-center text-white py-10 h-screen flex flex-col items-center justify-center gap-4">
             <p className="text-xl animate-pulse">⏳ Your video is processing...</p>
-            <p className="text-sm opacity-70">This may take 20–40 seconds.</p>
+            <p className="text-sm opacity-70">This may take some time</p>
           </div>
         ) : (
           <VideoEditorInterface videoData={GetVideoQuery.data} />

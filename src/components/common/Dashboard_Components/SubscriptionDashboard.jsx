@@ -122,14 +122,9 @@ export default function SubscriptionDashboard() {
 
         {/* Right Section - Features List */}
         <div className="space-y-4">
-          <div className="flex items-center space-x-3">
-            <div className="flex-shrink-0 w-5 h-5 bg-yellow-400 rounded-full flex items-center justify-center">
-              <Check className="w-3 h-3 text-black" strokeWidth={3} />
-            </div>
-            <span className="text-white text-sm sm:text-base">
+        <span className="text-white text-sm sm:text-base">
               {subscription?.data?.plan?.description}
             </span>
-          </div>
         </div>
       </div>
     </div>

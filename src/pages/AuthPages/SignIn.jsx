@@ -43,7 +43,7 @@ export default function SignIn() {
 
       setToken(response?.access);
 
-      navigate("/");
+      navigate("/dashboard");
     },
     onError: (error, _variables, context) => {
       const errorMessage =

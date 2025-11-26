@@ -9,15 +9,15 @@ import React from "react";
 
 const Home = () => {
   const axiosPublic = useAxiosPublic();
-const { data, isLoading } = useQuery({
-  queryKey: ["home"],
-  queryFn: async () => {
-    const res = await axiosPublic.get("cms/");
-    return res.data; // return only the data part
-  },
-});
+  const { data, isLoading } = useQuery({
+    queryKey: ["home"],
+    queryFn: async () => {
+      const res = await axiosPublic.get("cms/");
+      return res.data; // return only the data part
+    },
+  });
 
-const AllData= data?.data || [];
+  const AllData = data?.data || [];
   return (
     <div>
       <div className="section-padding-y">

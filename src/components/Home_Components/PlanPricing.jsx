@@ -30,8 +30,9 @@ const PlanPricing = ({ Plans }) => {
         context.toastId,
         response?.message || "Checkout successful"
       );
+      console.log(response)
       // ✅ Open in a new tab instead of redirecting
-      window.open(response?.data?.checkout_url, "_blank");
+      window.open(response?.data, "_blank");
     },
     onError: (error, _variables, context) => {
       console.log(error?.response?.data);
