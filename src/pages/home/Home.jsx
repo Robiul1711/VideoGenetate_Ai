@@ -16,13 +16,13 @@ const Home = () => {
       return res.data; // return only the data part
     },
   });
-
+console.log(data?.data)
   const AllData = data?.data || [];
   return (
     <div>
       <div className="section-padding-y">
         <Banner BannerData={AllData} isLoading={isLoading} />
-        <VideoGenerate AllData={AllData} />
+        <VideoGenerate AllData={AllData} isLoading={isLoading} />
       </div>
       <PowerfulFeatures AllData={AllData} />
       <DiscoverAi AllData={AllData} />

@@ -3,8 +3,6 @@ import { useQuery } from "@tanstack/react-query";
 import React from "react";
 import { Helmet } from "react-helmet";
 
-
-
 const About = () => {
   const axiosPublic = useAxiosPublic();
   const { data, isLoading } = useQuery({
@@ -19,8 +17,8 @@ const About = () => {
   return (
     <div className="section-padding-x py-12 max-w-6xl mx-auto">
       <Helmet>
-  <title>{"About Us"}</title>
-</Helmet>
+        <title>{"About Us"}</title>
+      </Helmet>
       {/* Page Header */}
       <header className="text-center mb-12">
         <h1 className="text-4xl font-bold text-Primary mb-4">
@@ -43,7 +41,7 @@ const About = () => {
 
       {/* Features Section */}
       <section className="mb-12">
-        <h2 className="text-2xl font-semibold text-Primary mb-4">Features</h2>
+
         <ul className="list-disc list-inside text-gray-300 space-y-2">
           {/* <li>Generate videos instantly from text input or scripts.</li> */}
           {AllData?.about_section?.features?.map((feature) => (

@@ -1,14 +1,13 @@
 import React, { useState } from "react";
 import Title from "../common/Title";
 import { motion } from "framer-motion";
-
-import videoimg from "@/assets/images/video-img.png";
-import { useAuth } from "@/hooks/useAuth";
 import ai from "@/assets/video/ai.mp4";
 import AnimatePlaceholder from "./AnimatePlaceholder";
 import SearchInput from "../admin/SearchInput";
 
-const VideoGenerate = () => {
+const VideoGenerate = ({ AllData ,isLoading}) => {
+  const VITE_IMG_URL = import.meta.env.VITE_IMG_URL;
+  console.log(AllData?.hero_section)
   const [searchValue, setSearchValue] = useState("");
   const placeholders = [
     "Describe your scene for an AI video...",
@@ -26,6 +25,14 @@ const VideoGenerate = () => {
   // Title text to animate
   const titleText = "Convert Your Ideas Into AI Videos";
 
+
+  const VideoSkeleton = () => {
+  return (
+    <div className="w-full h-[260px] md:h-[320px] lg:h-[450px] bg-gray-700/20 rounded-3xl overflow-hidden relative">
+      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-pulse" />
+    </div>
+  );
+};
   return (
     <div className="section-padding-x mt-16">
       <div className="flex flex-col lg:flex-row items-center justify-center gap-10 w-full">
@@ -85,18 +92,30 @@ const VideoGenerate = () => {
         </div>
 
         {/* Video Side (Right Column) */}
-        <div className="w-full lg:w-1/2">
-          <div className="border border-Primary/30 rounded-3xl overflow-hidden shadow-lg">
-            <video
-              className="w-full h-auto object-cover rounded-3xl"
-              controls
-              // poster={videoimg} // thumbnail image
-            >
-              <source src={ai} type="video/mp4" />
-              Your browser does not support the video tag.
-            </video>
-          </div>
-        </div>
+{/* Video Side (Right Column) */}
+<div className="w-full lg:w-1/2">
+  <div className="border border-Primary/30 rounded-3xl overflow-hidden shadow-lg">
+
+    {isLoading ? (
+      <VideoSkeleton />
+    ) : (
+      <video
+        className="w-full h-auto object-cover rounded-3xl"
+        autoPlay
+        loop
+        muted
+      >
+        <source
+          src={VITE_IMG_URL + AllData?.hero_section?.video || ai}
+          type="video/mp4"
+        />
+        Your browser does not support the video tag.
+      </video>
+    )}
+
+  </div>
+</div>
+
       </div>
     </div>
   );
